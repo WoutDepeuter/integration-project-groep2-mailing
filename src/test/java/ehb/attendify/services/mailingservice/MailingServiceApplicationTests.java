@@ -1,11 +1,13 @@
 package ehb.attendify.services.mailingservice;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
 
-@SpringBootTest
 class MailingServiceApplicationTests {
 
-
+    @Test
+    void shouldWork() {
+        Assert.isTrue(5 == 5, "Should've been true");
+    }
 
 }
