@@ -29,15 +29,20 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
-    developmentOnly("org.springframework.boot:spring-boot-starter-web")
     developmentOnly("org.springframework.boot:spring-boot-starter-actuator")
 
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
+    implementation("org.springframework.amqp:spring-rabbit-stream")
+
+    implementation("org.modelmapper:modelmapper:3.2.1")
+
     implementation("org.flywaydb:flyway-core:11.4.1")
     implementation("org.flywaydb:flyway-mysql:11.4.1")
-    implementation("org.springframework.amqp:spring-rabbit-stream")
+
     runtimeOnly("com.mysql:mysql-connector-j")
 
 
