@@ -1,4 +1,4 @@
-package ehb.attendify.services.mailing.mailingservice;
+package ehb.attendify.services.mailingservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package ehb.attendify.services.mailing.mailingservice;
+package ehb.attendify.services.mailingservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
