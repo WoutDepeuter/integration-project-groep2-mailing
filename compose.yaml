@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=mailing_service'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=mailing_dev'
+    ports:
+      - '3306'
+  rabbitmq:
+    image: 'rabbitmq:latest'
+    volumes:
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=secret'
+      - 'RABBITMQ_DEFAULT_USER=mailing_dev'
+    ports:
+      - '5672'
+      - '15672:15672'
