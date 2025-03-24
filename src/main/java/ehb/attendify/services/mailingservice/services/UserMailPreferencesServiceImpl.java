@@ -5,7 +5,6 @@ import ehb.attendify.services.mailingservice.models.UserMailPreferences;
 import ehb.attendify.services.mailingservice.repositories.UserMailPreferencesRepository;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
