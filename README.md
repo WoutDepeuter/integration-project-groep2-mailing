@@ -1,1 +1,1 @@
-# integration-project-groep1-mailing
+# integration-project-groep2-mailing
