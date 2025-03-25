@@ -4,6 +4,7 @@ import ehb.attendify.services.mailingservice.dto.UserMailPreferencesDto;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,8 +38,14 @@ public class UserMailPreferencesController {
     }
 
     @PostMapping("/{userId}")
-    public void updateForUser(@RequestBody UserMailPreferencesDto preferences, @PathVariable Long userId) {
+    public ResponseEntity<String> updateForUser(@RequestBody UserMailPreferencesDto preferences,
+                                                @PathVariable Long userId) {
+        System.out.println("Received request for user ID: " + userId);
+        System.out.println("Mail Greeting Type: " + preferences.getMailGreetingType());
+
         this.mailPreferencesService.updatePreferencesForUser(userId, preferences);
+
+        return ResponseEntity.ok("User preferences updated successfully!");
     }
 
 }

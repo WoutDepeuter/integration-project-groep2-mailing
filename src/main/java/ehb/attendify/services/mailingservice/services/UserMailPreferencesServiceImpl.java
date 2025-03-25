@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -18,6 +17,7 @@ public class UserMailPreferencesServiceImpl implements UserMailPreferencesServic
 
     private final UserMailPreferencesRepository userMailPreferencesRepository;
     private final ModelMapper mapper;
+    private final EmailService emailService;
 
     @Override
     public Optional<UserMailPreferences> getPreferencesForUser(Long userId) {
@@ -29,22 +29,30 @@ public class UserMailPreferencesServiceImpl implements UserMailPreferencesServic
         return this.userMailPreferencesRepository.findAll();
     }
 
+
     @Override
     public UserMailPreferences updatePreferencesForUser(Long userId, UserMailPreferencesDto preferences) {
         var optionalCur = this.userMailPreferencesRepository.findByUserId(userId);
+        UserMailPreferences updatedPref;
+
         if (optionalCur.isEmpty()) {
-            var pref = this.mapper.map(preferences, UserMailPreferences.class);
-            pref.setUserId(userId);
-            return this.userMailPreferencesRepository.saveAndFlush(pref);
+            updatedPref = this.mapper.map(preferences, UserMailPreferences.class);
+            updatedPref.setUserId(userId);
+        } else {
+            updatedPref = optionalCur.get();
+            if (preferences.getMailGreetingType() != null) {
+                updatedPref.setMailGreetingType(preferences.getMailGreetingType());
+            }
         }
 
-        var cur = optionalCur.get();
+        updatedPref = this.userMailPreferencesRepository.save(updatedPref);
 
-        if (Objects.nonNull(preferences.getMailGreetingType())) {
-            cur.setMailGreetingType(preferences.getMailGreetingType());
-        }
+        emailService.sendEmail(
+                "depeuterwout@gmail.com",
+                "Mail Preferences Updated ",
+                "Your mail preferences have been updated to: test test test ttest" + updatedPref.getMailGreetingType()
+        );
 
-
-        return this.userMailPreferencesRepository.save(cur);
+        return updatedPref;
     }
 }
