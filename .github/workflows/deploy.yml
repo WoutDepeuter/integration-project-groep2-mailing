@@ -2,7 +2,7 @@ name: Gradle Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -18,8 +18,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Run Tests with Gradle
         run: ./gradlew test --full-stacktrace
 
@@ -46,10 +48,10 @@ jobs:
 
       - name: Extract version from build.gradle.kts
         id: get_version
-        run: echo "VERSION=$(grep 'version =' build.gradle.kts | cut -d '"' -f 2)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(grep 'version =' build.gradle.kts | cut -d '"' -f 2)" >> $GITHUB_ENV
 
-      - name: Set repository name to lowercase
-        run: echo "REPO_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Convert repository name to lowercase
+        run: echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         id: push
@@ -57,10 +59,10 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: 'true'
-          tags: ghcr.io/${{ github.repository_owner }}/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]'):latest
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ env.REPO_NAME }}:latest
           build-args: |
-            VERSION=${{ steps.get_version.outputs.VERSION }}
+            VERSION=${{ env.VERSION }}
 
   deploy:
     name: Deploy
