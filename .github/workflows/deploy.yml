@@ -50,6 +50,9 @@ jobs:
         id: get_version
         run: echo "VERSION=$(grep 'version =' build.gradle.kts | cut -d '"' -f 2)" >> $GITHUB_ENV
 
+      - name: Convert repository name to lowercase
+        run: echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v5
@@ -57,7 +60,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]'):latest
+          tags: ghcr.io/${{ github.repository_owner }}/${{ env.REPO_NAME }}:latest
           build-args: |
             VERSION=${{ env.VERSION }}
 
