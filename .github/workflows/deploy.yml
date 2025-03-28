@@ -55,7 +55,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: 'true'
-          tags: ghrc.io/${{ github.repository }}:latest
+          tags: ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest
           build-args: |
             VERSION=${{ steps.get_version.outputs.VERSION }}
 
