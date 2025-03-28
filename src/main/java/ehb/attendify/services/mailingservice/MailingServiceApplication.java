@@ -12,9 +12,4 @@ public class MailingServiceApplication {
         SpringApplication.run(MailingServiceApplication.class, args);
     }
 
-    @Bean
-    public ModelMapper modelMapperProvider() {
-        return new ModelMapper();
-    }
-
 }

@@ -40,6 +40,11 @@ dependencies {
 
     implementation("org.modelmapper:modelmapper:3.2.1")
 
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.3")
+
+    implementation("org.apache.logging.log4j:log4j-bom:2.24.3")
+    implementation("org.apache.logging.log4j:log4j-api:2.24.3")
+
     implementation("org.flywaydb:flyway-core:11.4.1")
     implementation("org.flywaydb:flyway-mysql:11.4.1")
 
