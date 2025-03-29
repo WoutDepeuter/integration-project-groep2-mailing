@@ -1,14 +1,13 @@
 package ehb.attendify.services.mailingservice.models.mail.body;
 
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class Body {
 
-    @Getter
-    @Setter
     private String content;
 
     private List<Attachment> attachments;
