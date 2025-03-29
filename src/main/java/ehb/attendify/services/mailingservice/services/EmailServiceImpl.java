@@ -73,7 +73,7 @@ public class EmailServiceImpl implements EmailService {
             log.info("SendGrid Response Headers: {}", response.getHeaders());
 
         } catch (IOException ex) {
-            ex.printStackTrace();
+            log.error("Error sending email via SendGrid", ex);
         }
     }
 }
