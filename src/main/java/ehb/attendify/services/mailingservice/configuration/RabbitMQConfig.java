@@ -48,19 +48,6 @@ public class RabbitMQConfig {
         return new Queue("mailing.mail", true);
     }
 
-    @Bean
-    public List<Binding> mailingQueueBindings(TopicExchange exchange, Queue mailingQueue) {
-        List<Binding> bindings = new ArrayList<>();
-
-        for (String routingKey : ROUTING_KEYS) {
-            Binding binding = BindingBuilder.bind(mailingQueue).to(exchange).with(routingKey);
-            bindings.add(binding);
-            log.debug("Queue {} has been bound to exchange {} with routing key {}", mailingQueue.getName(), exchange.getName(), routingKey);
-        }
-
-        return bindings;
-    }
-
     @Bean("dynamic_bindings")
     List<Binding> bindings(TopicExchange exchange, AmqpAdmin amqpAdmin) {
         if (ROUTING_KEYS.isEmpty()) {
