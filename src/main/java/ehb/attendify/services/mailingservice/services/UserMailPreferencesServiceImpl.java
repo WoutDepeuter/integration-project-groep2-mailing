@@ -7,6 +7,7 @@ import ehb.attendify.services.mailingservice.models.mail.body.Body;
 import ehb.attendify.services.mailingservice.models.mail.header.Header;
 import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.repositories.UserMailPreferencesRepository;
+import ehb.attendify.services.mailingservice.services.api.EmailService;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,7 +22,7 @@ public class UserMailPreferencesServiceImpl implements UserMailPreferencesServic
 
     private final UserMailPreferencesRepository userMailPreferencesRepository;
     private final ModelMapper mapper;
-    private final EmailServiceImpl emailService;
+    private final EmailService emailService;
 
     @Override
     public Optional<UserMailPreferences> getPreferencesForUser(Long userId) {
