@@ -3,6 +3,7 @@ package ehb.attendify.services.mailingservice.controllers;
 import ehb.attendify.services.mailingservice.dto.UserMailPreferencesDto;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/UserMailPreferences")
 @RequiredArgsConstructor
+@Log4j2
 public class UserMailPreferencesController {
 
     private final UserMailPreferencesService mailPreferencesService;
@@ -40,8 +42,9 @@ public class UserMailPreferencesController {
     @PostMapping("/{userId}")
     public ResponseEntity<String> updateForUser(@RequestBody UserMailPreferencesDto preferences,
                                                 @PathVariable Long userId) {
-        System.out.println("Received request for user ID: " + userId);
-        System.out.println("Mail Greeting Type: " + preferences.getMailGreetingType());
+
+        log.info("Received request for user ID: {}", userId);
+        log.info("Mail Greeting Type: {}", preferences.getMailGreetingType());
 
         this.mailPreferencesService.updatePreferencesForUser(userId, preferences);
 
