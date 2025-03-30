@@ -48,6 +48,8 @@ dependencies {
     implementation("org.flywaydb:flyway-core:11.4.1")
     implementation("org.flywaydb:flyway-mysql:11.4.1")
 
+    implementation("com.sendgrid:sendgrid-java:4.10.3")
+
     runtimeOnly("com.mysql:mysql-connector-j")
 
 

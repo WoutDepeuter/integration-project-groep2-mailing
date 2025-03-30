@@ -43,6 +43,11 @@ public class RabbitMQConfig {
         return new TopicExchange(EXCHANGE_NAME);
     }
 
+    @Bean
+    public Queue mailingQueue() {
+        return new Queue("mailing.mail", true);
+    }
+
     @Bean("dynamic_bindings")
     List<Binding> bindings(TopicExchange exchange, AmqpAdmin amqpAdmin) {
         if (ROUTING_KEYS.isEmpty()) {
