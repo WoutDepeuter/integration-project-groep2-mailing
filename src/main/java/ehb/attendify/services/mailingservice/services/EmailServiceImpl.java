@@ -11,7 +11,6 @@ import com.sendgrid.helpers.mail.objects.Personalization;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
-import ehb.attendify.services.mailingservice.services.mailingservice.singleton.SendGridSingleton;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,14 +21,12 @@ import java.io.IOException;
 @Service
 public class EmailServiceImpl implements EmailService {
 
+    private final SendGrid sendGrid;
     private final String fromEmail;
 
-    public EmailServiceImpl(@Value("${sendgrid.from-email}") String fromEmail) {
+    public EmailServiceImpl(SendGrid sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
+        this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;
-    }
-
-    private SendGrid getSendGridInstance() {
-        return SendGridSingleton.getInstance();
     }
 
     @Override
@@ -69,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            Response response = getSendGridInstance().api(request);
+            Response response = sendGrid.api(request);
 
             log.info("SendGrid Response Code: {}", response.getStatusCode());
             log.info("SendGrid Response Body: {}", response.getBody());
