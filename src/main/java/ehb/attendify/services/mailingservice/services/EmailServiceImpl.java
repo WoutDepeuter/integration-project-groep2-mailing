@@ -11,6 +11,7 @@ import com.sendgrid.helpers.mail.objects.Personalization;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
+import ehb.attendify.services.mailingservice.services.mailingservice.singleton.SendGridSingleton;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,16 @@ import java.io.IOException;
 @Log4j2
 @Service
 public class EmailServiceImpl implements EmailService {
-    @Value("${sendgrid.api-key}")
-    private String sendGridApiKey;
 
-    @Value("${sendgrid.from-email}")
-    private String fromEmail;
+    private final String fromEmail;
+
+    public EmailServiceImpl(@Value("${sendgrid.from-email}") String fromEmail) {
+        this.fromEmail = fromEmail;
+    }
+
+    private SendGrid getSendGridInstance() {
+        return SendGridSingleton.getInstance();
+    }
 
     @Override
     public void sendEmail(GenericEmail email) {
@@ -34,7 +40,6 @@ public class EmailServiceImpl implements EmailService {
         mail.setSubject(email.getHeader().getSubject());
 
         Personalization personalization = new Personalization();
-
         if (email.getHeader().getRecipients() == null || email.getHeader().getRecipients().isEmpty()) {
             throw new IllegalArgumentException("No recipient");
         }
@@ -59,19 +64,16 @@ public class EmailServiceImpl implements EmailService {
         Content emailContent = new Content(email.getBody().getContentType().getType(), email.getBody().getContent());
         mail.addContent(emailContent);
 
-        SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();
-
         try {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            Response response = sg.api(request);
+            Response response = getSendGridInstance().api(request);
 
             log.info("SendGrid Response Code: {}", response.getStatusCode());
             log.info("SendGrid Response Body: {}", response.getBody());
             log.info("SendGrid Response Headers: {}", response.getHeaders());
-
         } catch (IOException ex) {
             log.error("Error sending email via SendGrid", ex);
         }
