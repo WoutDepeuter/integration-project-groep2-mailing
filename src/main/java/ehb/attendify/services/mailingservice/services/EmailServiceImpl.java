@@ -56,7 +56,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         mail.addPersonalization(personalization);
-        Content emailContent = new Content("text/plain", email.getBody().getContent());
+        Content emailContent = new Content(email.getBody().getContentType().getType(), email.getBody().getContent());
         mail.addContent(emailContent);
 
         SendGrid sg = new SendGrid(sendGridApiKey);
