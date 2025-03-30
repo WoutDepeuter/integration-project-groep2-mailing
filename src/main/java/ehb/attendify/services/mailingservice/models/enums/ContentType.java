@@ -1,5 +1,8 @@
 package ehb.attendify.services.mailingservice.models.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ContentType {
     TEXT_PLAIN("text/plain"),
     TEXT_HTML("text/html");
@@ -10,7 +13,4 @@ public enum ContentType {
         this.type = type;
     }
 
-    public String getType() {
-        return type;
-    }
 }
