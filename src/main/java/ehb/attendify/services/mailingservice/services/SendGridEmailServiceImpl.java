@@ -19,18 +19,20 @@ import java.io.IOException;
 
 @Log4j2
 @Service
-public class EmailServiceImpl implements EmailService {
+public class SendGridEmailServiceImpl implements EmailService {
 
     private final SendGrid sendGrid;
     private final String fromEmail;
 
-    public EmailServiceImpl(SendGrid sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
+    public SendGridEmailServiceImpl(SendGrid sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
         this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;
     }
 
     @Override
     public void sendEmail(GenericEmail email) {
+        log.debug("SendGridEmailServiceImpl#sendEmail received {}", email);
+
         Email from = new Email(fromEmail);
         Mail mail = new Mail();
         mail.setFrom(from);
@@ -68,9 +70,13 @@ public class EmailServiceImpl implements EmailService {
             request.setBody(mail.build());
             Response response = sendGrid.api(request);
 
-            log.info("SendGrid Response Code: {}", response.getStatusCode());
-            log.info("SendGrid Response Body: {}", response.getBody());
-            log.info("SendGrid Response Headers: {}", response.getHeaders());
+            if (response.getStatusCode() == 200) {
+                log.debug("Email was send successfully: {}", response.getBody());
+                return;
+            }
+
+            log.error("SendGrid send back a non 200 response code {}, Body: {}, Headers: {}",
+                    response.getStatusCode(), response.getBody(), response.getHeaders());
         } catch (IOException ex) {
             log.error("Error sending email via SendGrid", ex);
         }

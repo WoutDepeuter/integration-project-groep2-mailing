@@ -44,9 +44,34 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue mailingQueue() {
-        return new Queue("mailing.mail", true);
+    TopicExchange mailingExchange() {
+        return new TopicExchange("mailing");
     }
+
+    @Bean
+    public Queue passwordGeneratedMailingQueue() {
+        return new Queue("mailing.password.generated", true);
+    }
+
+    @Bean
+    public Queue genericGeneratedMailingQueue() {
+        return new Queue("mailing.generic", true);
+    }
+
+    @Bean
+    Binding passwordGeneratedMailingBinding(Queue passwordGeneratedMailingQueue, TopicExchange mailingExchange) {
+        return BindingBuilder.bind(passwordGeneratedMailingQueue)
+                .to(mailingExchange)
+                .with("passwordGenerated");
+    }
+
+    @Bean
+    Binding genericMailingBinding(Queue genericGeneratedMailingQueue, TopicExchange mailingExchange) {
+        return BindingBuilder.bind(genericGeneratedMailingQueue)
+                .to(mailingExchange)
+                .with("generic");
+    }
+
 
     @Bean("dynamic_bindings")
     List<Binding> bindings(TopicExchange exchange, AmqpAdmin amqpAdmin) {
@@ -57,15 +82,15 @@ public class RabbitMQConfig {
 
         List<Binding> bindings = new ArrayList<>();
         for (String key : ROUTING_KEYS) {
-            AnonymousQueue queue = new AnonymousQueue();
+            Queue queue = new Queue(String.format("mailing-service.%s", key));
             bindings.add(BindingBuilder.bind(queue).to(exchange).with(key));
 
             amqpAdmin.declareQueue(queue);
             queueNames.put(key, queue.getName());
-            log.debug("Anonymous queue {} has been bounded to {} with {}", queue.getName(), exchange.getName(), key);
+            log.debug("Queue {} has been bounded to {} with {}", queue.getName(), exchange.getName(), key);
         }
 
-        log.info("{} anonymous queues have been configured for this sessions", queueNames.size());
+        log.info("{} queues have been configured for this sessions", queueNames.size());
         return bindings;
     }
 
