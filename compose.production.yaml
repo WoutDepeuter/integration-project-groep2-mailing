@@ -1,0 +1,35 @@
+
+services:
+  mailing-service:
+    image: ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest
+    networks:
+      - attendify_net
+      - mailing
+    environment:
+      - 'LOG_LEVEL=debug'
+      - 'DB_HOST=mysql'
+      - 'DB_AUTH_PASS=changeme'
+      - 'RABBITMQ_HOST=changeme'
+      - 'RABBITMQ_PASS=changeme'
+      - 'SENDGRID_API_KEY=changeme'
+      - 'SENDGRID_FROM_EMAIL=changeme'
+
+  mysql:
+    image: 'mysql:latest'
+    networks:
+      - mailing
+    volumes:
+      - mysql-mailing:/var/lib/mysql:rw
+    environment:
+      - 'MYSQL_DATABASE=mailing_service'
+      - 'MYSQL_PASSWORD=changeme'
+      - 'MYSQL_ROOT_PASSWORD=changeme'
+      - 'MYSQL_USER=mailing_dev'
+
+volumes:
+  mysql-mailing: {}
+
+networks:
+  attendify_net:
+    external: true
+  mailing:
