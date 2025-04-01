@@ -70,12 +70,12 @@ public class SendGridEmailServiceImpl implements EmailService {
             request.setBody(mail.build());
             Response response = sendGrid.api(request);
 
-            if (response.getStatusCode() == 200) {
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
                 log.debug("Email was send successfully: {}", response.getBody());
                 return;
             }
 
-            log.error("SendGrid send back a non 200 response code {}, Body: {}, Headers: {}",
+            log.error("SendGrid send back a non positive response code {}, Body: {}, Headers: {}",
                     response.getStatusCode(), response.getBody(), response.getHeaders());
         } catch (IOException ex) {
             log.error("Error sending email via SendGrid", ex);
