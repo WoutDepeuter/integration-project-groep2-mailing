@@ -31,7 +31,7 @@ public class SendGridEmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(GenericEmail email) {
-        log.debug("SendGridEmailServiceImpl#sendEmail received {}", email);
+        log.debug("SendGridEmailServiceImpl#sendEmail received {}, sending from {}", email, fromEmail);
 
         Email from = new Email(fromEmail);
         Mail mail = new Mail();
