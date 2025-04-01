@@ -50,4 +50,22 @@ public class UserMailPreferencesServiceImpl implements UserMailPreferencesServic
 
         return updatedPref;
     }
+
+    @Override
+    public UserMailPreferences updatePreferencesForUserByEmail(String email, UserMailPreferencesDto preferences) {
+        var optionalCur = this.userMailPreferencesRepository.findByEmail(email);
+
+        UserMailPreferences updatedPref;
+        if (optionalCur.isEmpty()) {
+            updatedPref = this.mapper.map(preferences, UserMailPreferences.class);
+            updatedPref.setEmail(email);
+        } else {
+            updatedPref = optionalCur.get();
+            if (preferences.getMailGreetingType() != null) {
+                updatedPref.setMailGreetingType(preferences.getMailGreetingType());
+            }
+        }
+
+        return this.userMailPreferencesRepository.save(updatedPref);
+    }
 }

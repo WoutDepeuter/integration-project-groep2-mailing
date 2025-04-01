@@ -1,13 +1,14 @@
 package ehb.attendify.services.mailingservice.dto;
 
-import ehb.attendify.services.mailingservice.models.enums.MailGreetingType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class UserMailPreferencesDto {
 
-    private MailGreetingType mailGreetingType;
+    private String mailGreetingType;
 
 }

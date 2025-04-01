@@ -1,6 +1,5 @@
 package ehb.attendify.services.mailingservice.models;
 
-import ehb.attendify.services.mailingservice.models.enums.MailGreetingType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +20,9 @@ public class UserMailPreferences {
     @Column(unique = true)
     private Long userId;
 
-    private MailGreetingType mailGreetingType;
+    @Column(unique = true)
+    private String email;
+
+    private String mailGreetingType;
 
 }

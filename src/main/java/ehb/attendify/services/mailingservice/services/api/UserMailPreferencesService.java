@@ -14,4 +14,6 @@ public interface UserMailPreferencesService {
 
     UserMailPreferences updatePreferencesForUser(Long userId, UserMailPreferencesDto preferences);
 
+    UserMailPreferences updatePreferencesForUserByEmail(String email, UserMailPreferencesDto preferencesDto);
+
 }
