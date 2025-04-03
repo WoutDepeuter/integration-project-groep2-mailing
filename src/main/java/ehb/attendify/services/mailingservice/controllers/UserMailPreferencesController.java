@@ -1,10 +1,13 @@
 package ehb.attendify.services.mailingservice.controllers;
 
 import ehb.attendify.services.mailingservice.dto.UserMailPreferencesDto;
+import ehb.attendify.services.mailingservice.models.general.AttendifyMessage;
+import ehb.attendify.services.mailingservice.models.user.User;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +26,17 @@ public class UserMailPreferencesController {
 
     private final UserMailPreferencesService mailPreferencesService;
     private final ModelMapper mapper;
+
+    @RabbitListener(queues = "mailing.user")
+    public void onUserUpdate(AttendifyMessage<User> userAttendifyMessage) {
+        var dto = UserMailPreferencesDto.builder()
+                .mailGreetingType(userAttendifyMessage.getUser().getTitle())
+                .build();
+        var email = userAttendifyMessage.getUser().getEmail();
+
+        this.mailPreferencesService.updatePreferencesForUserByEmail(email, dto);
+        log.debug("Updated UserMailPreferences for {}", email);
+    }
 
     @GetMapping("/all")
     public Iterable<UserMailPreferencesDto> getAll() {

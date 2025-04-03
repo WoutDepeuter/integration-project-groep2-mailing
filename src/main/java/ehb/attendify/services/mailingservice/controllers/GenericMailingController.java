@@ -40,7 +40,7 @@ public class GenericMailingController {
         log.debug("GenericMailingController#onPasswordGenerated called. Sender: {}, Operation: {}",
                 userAttendifyMessage.getInfo().getSender(), userAttendifyMessage.getInfo().getOperation());
 
-        if (!List.of(Constants.CRM, Constants.POS).contains(userAttendifyMessage.getInfo().getSender())) {
+        if (!List.of(Constants.CRM, Constants.POS).contains(userAttendifyMessage.getInfo().getSender().toLowerCase())) {
             return;
         }
 
@@ -55,8 +55,6 @@ public class GenericMailingController {
             log.error("We've received an empty user for a message");
             return;
         }
-
-        log.debug("Received user CREATE: {}", user);
 
         GenericEmail email = GenericEmail.builder()
                 .header(Header.builder()

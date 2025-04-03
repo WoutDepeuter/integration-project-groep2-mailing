@@ -20,29 +20,6 @@ import java.util.Map;
 @Configuration
 public class RabbitMQConfig {
 
-    private final String EXCHANGE_NAME = "event";
-    public final List<String> ROUTING_KEYS = List.of(
-            Constants.EVENT_REGISTER,
-            Constants.EVENT_UNREGISTER,
-            Constants.EVENT_CREATE,
-            Constants.EVENT_UPDATE,
-            Constants.EVENT_CANCEL,
-            Constants.EVENT_MAILING_LIST,
-            Constants.SESSION_REGISTER,
-            Constants.SESSION_UNREGISTER,
-            Constants.SESSION_CREATE,
-            Constants.SESSION_UPDATE,
-            Constants.SESSION_CANCEL,
-            Constants.SESSION_DELAY,
-            Constants.INVOICE_SEND
-    );
-    public final Map<String, String> queueNames = new HashMap<>();
-
-    @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NAME);
-    }
-
     @Bean
     TopicExchange mailingExchange() {
         return new TopicExchange("mailing");
@@ -70,28 +47,6 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(genericGeneratedMailingQueue)
                 .to(mailingExchange)
                 .with("generic");
-    }
-
-
-    @Bean("dynamic_bindings")
-    List<Binding> bindings(TopicExchange exchange, AmqpAdmin amqpAdmin) {
-        if (ROUTING_KEYS.isEmpty()) {
-            log.warn("No routing keys have been found in the RabbitMQConfig, not configuring any queues");
-            return List.of();
-        }
-
-        List<Binding> bindings = new ArrayList<>();
-        for (String key : ROUTING_KEYS) {
-            Queue queue = new Queue(String.format("mailing-service.%s", key));
-            bindings.add(BindingBuilder.bind(queue).to(exchange).with(key));
-
-            amqpAdmin.declareQueue(queue);
-            queueNames.put(key, queue.getName());
-            log.debug("Queue {} has been bounded to {} with {}", queue.getName(), exchange.getName(), key);
-        }
-
-        log.info("{} queues have been configured for this sessions", queueNames.size());
-        return bindings;
     }
 
 }
