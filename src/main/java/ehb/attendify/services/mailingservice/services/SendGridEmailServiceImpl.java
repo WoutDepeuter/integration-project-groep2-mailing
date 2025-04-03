@@ -24,6 +24,10 @@ public class SendGridEmailServiceImpl implements EmailService {
     public SendGridEmailServiceImpl(SendGridAPI sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
         this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;
+
+        if (this.fromEmail == null || this.fromEmail.isEmpty()) {
+            log.warn("Sender email address is null or empty, check if this is intended");
+        }
     }
 
     @Override
