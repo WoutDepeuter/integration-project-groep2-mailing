@@ -26,8 +26,4 @@ public class Constants {
 
     public static final String INVOICE_SEND = "invoice.send";
 
-    public static final Set<String> VALID_SENDERS = Arrays.stream(Sender.values())
-            .map(sender -> sender.name().toLowerCase())
-            .collect(Collectors.toSet());
-
 }

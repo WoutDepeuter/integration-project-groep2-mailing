@@ -3,6 +3,7 @@ package ehb.attendify.services.mailingservice.controllers;
 import ehb.attendify.services.mailingservice.configuration.Constants;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.enums.Operation;
+import ehb.attendify.services.mailingservice.models.enums.Sender;
 import ehb.attendify.services.mailingservice.models.general.AttendifyMessage;
 import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.models.user.User;
@@ -31,7 +32,7 @@ public class PasswordController {
         log.debug("GenericMailingController#onPasswordGenerated called. Sender: {}, Operation: {}",
                 userAttendifyMessage.getInfo().getSender(), userAttendifyMessage.getInfo().getOperation());
 
-        if (!List.of(Constants.CRM, Constants.POS).contains(userAttendifyMessage.getInfo().getSender().toLowerCase())) {
+        if (!List.of(Sender.CRM, Sender.POS).contains(userAttendifyMessage.getInfo().getSender())) {
             return;
         }
 
