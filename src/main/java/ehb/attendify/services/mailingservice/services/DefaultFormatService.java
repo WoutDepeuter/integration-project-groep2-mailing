@@ -28,7 +28,7 @@ public class DefaultFormatService implements FormatService {
     private final UserMailPreferencesService userMailPreferencesService;
 
     @Override
-    public GenericEmail formatEmail(Template template, User user, Object data) {
+    public GenericEmail formatSimpleEmail(Template template, User user, Object data) {
         return GenericEmail.builder()
                 .header(Header.builder()
                         .recipients(List.of(

@@ -54,7 +54,7 @@ public class PasswordController {
         }
 
         var template = optionalTemplate.get();
-        GenericEmail email = this.formatService.formatEmail(template, user, user);
+        GenericEmail email = this.formatService.formatSimpleEmail(template, user, user);
         emailService.sendEmail(email);
     }
 
