@@ -1,6 +1,5 @@
 package ehb.attendify.services.mailingservice.controllers;
 
-import ehb.attendify.services.mailingservice.configuration.Constants;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.enums.ContentType;
 import ehb.attendify.services.mailingservice.models.enums.Operation;
@@ -15,6 +14,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static ehb.attendify.services.mailingservice.configuration.Constants.VALID_SENDERS;
 
 @Log4j2
 @Component
@@ -40,7 +41,7 @@ public class GenericMailingController {
         log.debug("GenericMailingController#onPasswordGenerated called. Sender: {}, Operation: {}",
                 userAttendifyMessage.getInfo().getSender(), userAttendifyMessage.getInfo().getOperation());
 
-        if (!List.of(Constants.CRM, Constants.POS).contains(userAttendifyMessage.getInfo().getSender().toLowerCase())) {
+        if (!VALID_SENDERS.contains(userAttendifyMessage.getInfo().getSender().name().toLowerCase())) {
             return;
         }
 
