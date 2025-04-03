@@ -1,21 +1,12 @@
 package ehb.attendify.services.mailingservice.configuration;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.AnonymousQueue;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Log4j2
 @Configuration
 public class RabbitMQConfig {
@@ -47,6 +38,16 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(genericGeneratedMailingQueue)
                 .to(mailingExchange)
                 .with("generic");
+    }
+
+    @Bean
+    public Queue userQueue() {
+        return new Queue("mailing.user");
+    }
+
+    @Bean
+    public Queue templateQueue() {
+        return new Queue("mailing.template");
     }
 
 }

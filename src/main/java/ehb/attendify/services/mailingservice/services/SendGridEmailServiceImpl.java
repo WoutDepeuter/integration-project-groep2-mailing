@@ -1,9 +1,6 @@
 package ehb.attendify.services.mailingservice.services;
 
-import com.sendgrid.Method;
-import com.sendgrid.Request;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
+import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -21,10 +18,10 @@ import java.io.IOException;
 @Service
 public class SendGridEmailServiceImpl implements EmailService {
 
-    private final SendGrid sendGrid;
+    private final SendGridAPI sendGrid;
     private final String fromEmail;
 
-    public SendGridEmailServiceImpl(SendGrid sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
+    public SendGridEmailServiceImpl(SendGridAPI sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
         this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;
     }
