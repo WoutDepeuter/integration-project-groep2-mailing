@@ -18,11 +18,15 @@ public class UserMailPreferencesServiceImpl implements UserMailPreferencesServic
 
     private final UserMailPreferencesRepository userMailPreferencesRepository;
     private final ModelMapper mapper;
-    private final EmailService emailService;
 
     @Override
     public Optional<UserMailPreferences> getPreferencesForUser(Long userId) {
         return this.userMailPreferencesRepository.findByUserId(userId);
+    }
+
+    @Override
+    public Optional<UserMailPreferences> getPreferencesForEmail(String email) {
+        return this.userMailPreferencesRepository.findByEmail(email);
     }
 
     @Override

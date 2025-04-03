@@ -1,0 +1,3 @@
+ALTER TABLE template ADD content_type SMALLINT NOT NULL;
+
+ALTER TABLE template ADD subject VARCHAR(255) NOT NULL;

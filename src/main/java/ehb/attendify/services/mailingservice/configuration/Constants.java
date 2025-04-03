@@ -1,6 +1,11 @@
 package ehb.attendify.services.mailingservice.configuration;
 
+import ehb.attendify.services.mailingservice.models.enums.Sender;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 public class Constants {
@@ -20,10 +25,5 @@ public class Constants {
     public static final String SESSION_DELAY = "session.delay";
 
     public static final String INVOICE_SEND = "invoice.send";
-
-
-    public static final String CRM = "crm";
-    public static final String POS = "pos";
-
 
 }

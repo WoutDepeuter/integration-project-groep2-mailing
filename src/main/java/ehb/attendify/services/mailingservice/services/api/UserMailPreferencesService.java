@@ -10,6 +10,8 @@ public interface UserMailPreferencesService {
 
     Optional<UserMailPreferences> getPreferencesForUser(Long userId);
 
+    Optional<UserMailPreferences> getPreferencesForEmail(String email);
+
     List<UserMailPreferences> getAllPreferences();
 
     UserMailPreferences updatePreferencesForUser(Long userId, UserMailPreferencesDto preferences);
