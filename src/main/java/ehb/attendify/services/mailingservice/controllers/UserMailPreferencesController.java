@@ -30,9 +30,9 @@ public class UserMailPreferencesController {
     @RabbitListener(queues = "mailing.user")
     public void onUserUpdate(AttendifyMessage<User> userAttendifyMessage) {
         var dto = UserMailPreferencesDto.builder()
-                .mailGreetingType(userAttendifyMessage.getUser().getTitle())
+                .mailGreetingType(userAttendifyMessage.getPayload().getTitle())
                 .build();
-        var email = userAttendifyMessage.getUser().getEmail();
+        var email = userAttendifyMessage.getPayload().getEmail();
 
         this.mailPreferencesService.updatePreferencesForUserByEmail(email, dto);
         log.debug("Updated UserMailPreferences for {}", email);

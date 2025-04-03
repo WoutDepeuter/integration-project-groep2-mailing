@@ -50,7 +50,7 @@ public class GenericMailingController {
 
         // Terrible code, this exact situation is for the templating stuff
 
-        User user = userAttendifyMessage.getUser();
+        User user = userAttendifyMessage.getPayload();
         if (user == null) {
             log.error("We've received an empty user for a message");
             return;
