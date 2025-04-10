@@ -42,6 +42,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue mailingQueue() {
+        return new Queue("mailing.mail");
+    }
+
+    @Bean
     public Queue userQueue() {
         return new Queue("mailing.user");
     }

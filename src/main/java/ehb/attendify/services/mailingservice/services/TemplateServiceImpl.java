@@ -3,11 +3,9 @@ package ehb.attendify.services.mailingservice.services;
 import ehb.attendify.services.mailingservice.dto.TemplateDto;
 import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.repositories.TemplateRepository;
-import ehb.attendify.services.mailingservice.services.api.StringService;
 import ehb.attendify.services.mailingservice.services.api.TemplateService;
 import ehb.attendify.services.mailingservice.services.api.TemplateUpdateResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,7 +15,6 @@ import java.util.Optional;
 public class TemplateServiceImpl implements TemplateService {
 
     private final TemplateRepository templateRepository;
-    private final StringService stringService;
 
 
     @Override
@@ -36,7 +33,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         var oldVersion = template.getVersion();
 
-        template.setTemplate(this.stringService.toByteArray(dto.getTemplate()));
+        template.setTemplate(dto.getTemplate());
         template.setVersion(dto.getVersion());
         template.setDisplayName(dto.getDisplayName());
         template.setSubject(dto.getSubject());

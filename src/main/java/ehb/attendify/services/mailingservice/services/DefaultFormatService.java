@@ -8,7 +8,6 @@ import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.models.user.User;
 import ehb.attendify.services.mailingservice.services.api.FormatService;
 import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
-import ehb.attendify.services.mailingservice.services.api.StringService;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,14 +24,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultFormatService implements FormatService {
 
-    private final StringService stringService;
     private final UserMailPreferencesService userMailPreferencesService;
     private final MessageMapperService messageMapperService;
 
     @Override
     public GenericEmail formatEmail(Template template, Object data) {
+        var header = this.messageMapperService.extractHeader(template, data);
+        if (header == null) {
+            return null;
+        }
+
         return GenericEmail.builder()
-                .header(this.messageMapperService.extractHeader(template, data))
+                .header(header)
                 .body(Body.builder()
                         .contentType(template.getContentType())
                         .content(this.format(template, data))
@@ -60,7 +63,7 @@ public class DefaultFormatService implements FormatService {
 
     @Override
     public String format(Template template, Object data) {
-        return this.stringService.fromByteArray(template.getTemplate());
+        return template.getTemplate();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ehb.attendify.services.mailingservice.configuration;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridAPI;
 import ehb.attendify.services.mailingservice.mappers.ByteArrayToStringMapper;
@@ -31,6 +32,11 @@ public class Providers {
     @Bean
     public Jackson2XmlMessageConverter xmlMessageConverter() {
         return new Jackson2XmlMessageConverter();
+    }
+
+    @Bean
+    public XmlMapper xmlMapper() {
+        return new XmlMapper();
     }
 
     @Bean

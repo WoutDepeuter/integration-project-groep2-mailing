@@ -36,6 +36,8 @@ public class GenericMailingController {
         var exchange = message.getMessageProperties().getReceivedExchange();
         var routingKey = message.getMessageProperties().getReceivedRoutingKey();
 
+        log.debug("Received an event on {} via {}", exchange, routingKey);
+
         var optionalTemplate = templateService.getTemplate(exchange, routingKey);
 
         if (optionalTemplate.isEmpty()) {
@@ -48,13 +50,20 @@ public class GenericMailingController {
         Object obj;
         try {
             obj = messageMapperService.map(message);
-        } catch (UnknownMessageSource unknownMessageSource) {
-            log.error("Failed to map message on {} via {}", exchange, routingKey, unknownMessageSource);
+        } catch (Exception exception) {
+            log.error("Failed to map message on {} via {}", exchange, routingKey, exception);
             return;
         }
 
+        log.debug("Map message on {} via {} to class {}", exchange, routingKey, obj.getClass().getSimpleName());
+
 
         var email = formatService.formatEmail(template, obj);
+        if (email == null) {
+            log.warn("Formatted email is null, possible a header issue");
+            return;
+        }
+
         this.emailService.sendEmail(email);
     }
 

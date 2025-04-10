@@ -5,6 +5,6 @@ CREATE TABLE template
     routing_key  VARCHAR(255) NOT NULL,
     version      VARCHAR(255) NOT NULL,
     display_name VARCHAR(255) NOT NULL,
-    template     BLOB         NOT NULL,
+    template     TEXT         NOT NULL,
     CONSTRAINT pk_template PRIMARY KEY (id)
 );

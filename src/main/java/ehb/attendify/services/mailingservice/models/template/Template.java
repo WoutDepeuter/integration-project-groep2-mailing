@@ -30,6 +30,6 @@ public class Template {
 
     private String subject;
 
-    private byte[] template;
+    private String template;
 
 }
