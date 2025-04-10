@@ -5,6 +5,7 @@ import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.repositories.TemplateRepository;
 import ehb.attendify.services.mailingservice.services.api.StringService;
 import ehb.attendify.services.mailingservice.services.api.TemplateService;
+import ehb.attendify.services.mailingservice.services.api.TemplateUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,11 @@ public class TemplateServiceImpl implements TemplateService {
 
 
     @Override
-    public Pair<String, Boolean> updateTemplate(TemplateDto dto) {
+    public TemplateUpdateResponse updateTemplate(TemplateDto dto) {
         Optional<Template> optionalTemplate = this.getTemplate(dto.getExchange(), dto.getRoutingKey());
+
         if (optionalTemplate.isPresent() && optionalTemplate.get().getVersion().equals(dto.getVersion())) {
-            return Pair.of("", false);
+            return new TemplateUpdateResponse(false, "", "");
         }
 
         Template template = optionalTemplate.orElse(
@@ -41,7 +43,8 @@ public class TemplateServiceImpl implements TemplateService {
         template.setContentType(dto.getContentType());
 
         templateRepository.save(template);
-        return Pair.of(oldVersion, true);
+
+        return new TemplateUpdateResponse(true, oldVersion, template.getVersion());
     }
 
     @Override

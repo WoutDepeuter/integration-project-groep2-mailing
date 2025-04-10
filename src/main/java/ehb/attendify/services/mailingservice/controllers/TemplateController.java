@@ -18,13 +18,13 @@ public class TemplateController {
 
     @RabbitListener(queues = "#{templateQueue.name}")
     public void onTemplateChange(TemplateDto template) {
-        Pair<String, Boolean> ret = this.templateService.updateTemplate(template);
-        if (!ret.getSecond()) {
+        var res = this.templateService.updateTemplate(template);
+        if (!res.isHasUpdated()) {
             log.debug("Template {} was not updated; version {} was up to date", template.getDisplayName(), template.getVersion());
             return;
         }
 
-        log.info("Updated template {} from version {} to {}", template.getDisplayName(), ret.getFirst(), template.getVersion());
+        log.info("Updated template {} from version {} to {}", template.getDisplayName(), res.getUpdatedFrom(), res.getUpdatedTo());
     }
 
 }
