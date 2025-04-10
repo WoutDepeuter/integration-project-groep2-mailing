@@ -1,10 +1,9 @@
 package ehb.attendify.services.mailingservice.controllers;
 
-import ehb.attendify.services.mailingservice.configuration.Constants;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.enums.Operation;
 import ehb.attendify.services.mailingservice.models.enums.Sender;
-import ehb.attendify.services.mailingservice.models.general.AttendifyMessage;
+import ehb.attendify.services.mailingservice.models.general.AttendifyUserMessage;
 import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.models.user.User;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
@@ -28,19 +27,19 @@ public class PasswordController {
     private final FormatService formatService;
 
     @RabbitListener(queues = "mailing.password.generated")
-    public void onPasswordGenerated(AttendifyMessage<User> userAttendifyMessage) {
+    public void onPasswordGenerated(AttendifyUserMessage msg) {
         log.debug("GenericMailingController#onPasswordGenerated called. Sender: {}, Operation: {}",
-                userAttendifyMessage.getInfo().getSender(), userAttendifyMessage.getInfo().getOperation());
+                msg.getInfo().getSender(), msg.getInfo().getOperation());
 
-        if (!List.of(Sender.CRM, Sender.POS).contains(userAttendifyMessage.getInfo().getSender())) {
+        if (!List.of(Sender.CRM, Sender.POS).contains(msg.getInfo().getSender())) {
             return;
         }
 
-        if (!userAttendifyMessage.getInfo().getOperation().equals(Operation.CREATE)) {
+        if (!msg.getInfo().getOperation().equals(Operation.CREATE)) {
             return;
         }
 
-        User user = userAttendifyMessage.getUser();
+        User user = msg.getUser();
         if (user == null) {
             log.error("We've received an empty user for a message");
             return;
@@ -50,7 +49,7 @@ public class PasswordController {
         if (optionalTemplate.isEmpty()) {
             log.error("Received a message on {} with no template bounded, contact the {}-team",
                     "mailing.password.generated",
-                    userAttendifyMessage.getInfo().getSender());
+                    msg.getInfo().getSender());
             return;
         }
 

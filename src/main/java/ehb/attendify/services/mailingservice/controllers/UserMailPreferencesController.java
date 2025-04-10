@@ -1,8 +1,7 @@
 package ehb.attendify.services.mailingservice.controllers;
 
 import ehb.attendify.services.mailingservice.dto.UserMailPreferencesDto;
-import ehb.attendify.services.mailingservice.models.general.AttendifyMessage;
-import ehb.attendify.services.mailingservice.models.user.User;
+import ehb.attendify.services.mailingservice.models.general.AttendifyUserMessage;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,11 +27,11 @@ public class UserMailPreferencesController {
     private final ModelMapper mapper;
 
     @RabbitListener(queues = "mailing.user")
-    public void onUserUpdate(AttendifyMessage<User> userAttendifyMessage) {
+    public void onUserUpdate(AttendifyUserMessage msg) {
         var dto = UserMailPreferencesDto.builder()
-                .mailGreetingType(userAttendifyMessage.getUser().getTitle())
+                .mailGreetingType(msg.getUser().getTitle())
                 .build();
-        var email = userAttendifyMessage.getUser().getEmail();
+        var email = msg.getUser().getEmail();
 
         this.mailPreferencesService.updatePreferencesForUserByEmail(email, dto);
         log.debug("Updated UserMailPreferences for {}", email);
