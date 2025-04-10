@@ -2,6 +2,11 @@ package ehb.attendify.services.mailingservice.services;
 
 import ehb.attendify.services.mailingservice.configuration.Constants;
 import ehb.attendify.services.mailingservice.models.general.AttendifyUserMessage;
+import ehb.attendify.services.mailingservice.models.mail.header.Header;
+import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
+import ehb.attendify.services.mailingservice.models.template.Template;
+import ehb.attendify.services.mailingservice.models.user.User;
+import ehb.attendify.services.mailingservice.services.api.FormatService;
 import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
 import ehb.attendify.services.mailingservice.services.api.UnknownMessageSource;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +15,15 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.support.converter.Jackson2XmlMessageConverter;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class MessageMapperServiceImpl implements MessageMapperService {
 
     private final Jackson2XmlMessageConverter xmlMessageConverter;
+    private final FormatService formatService;
 
     @Override
     public Object map(Message message) throws UnknownMessageSource {
@@ -30,6 +38,28 @@ public class MessageMapperServiceImpl implements MessageMapperService {
                 throw new UnknownMessageSource(exchange, routingKey);
         };
 
+    }
+
+    @Override
+    public Header extractHeader(Template template, Object obj) {
+        if (obj instanceof AttendifyUserMessage userMessage) {
+            return this.userHeader(template, userMessage);
+        }
+
+
+        return null;
+    }
+
+    private Header userHeader(Template template, AttendifyUserMessage msg) {
+        User user = msg.getUser();
+        return Header.builder()
+                .recipients(List.of(
+                        Recipient.builder()
+                                .email(user.getEmail())
+                                .build()
+                ))
+                .subject(template.getSubject())
+                .build();
     }
 
     private Object userMapper(Message message) {

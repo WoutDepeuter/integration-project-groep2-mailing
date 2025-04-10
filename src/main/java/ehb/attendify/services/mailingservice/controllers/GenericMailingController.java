@@ -53,10 +53,9 @@ public class GenericMailingController {
             return;
         }
 
-        // How do we know who to send stuff to?
-        // Need to configure receivers?
-        // formatService.formatSimpleEmail(template, obj);
 
+        var email = formatService.formatEmail(template, obj);
+        this.emailService.sendEmail(email);
     }
 
 }

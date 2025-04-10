@@ -7,6 +7,7 @@ import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.models.user.User;
 import ehb.attendify.services.mailingservice.services.api.FormatService;
+import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
 import ehb.attendify.services.mailingservice.services.api.StringService;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,18 @@ public class DefaultFormatService implements FormatService {
 
     private final StringService stringService;
     private final UserMailPreferencesService userMailPreferencesService;
+    private final MessageMapperService messageMapperService;
+
+    @Override
+    public GenericEmail formatEmail(Template template, Object data) {
+        return GenericEmail.builder()
+                .header(this.messageMapperService.extractHeader(template, data))
+                .body(Body.builder()
+                        .contentType(template.getContentType())
+                        .content(this.format(template, data))
+                        .build())
+                .build();
+    }
 
     @Override
     public GenericEmail formatSimpleEmail(Template template, User user, Object data) {
@@ -33,8 +46,6 @@ public class DefaultFormatService implements FormatService {
                 .header(Header.builder()
                         .recipients(List.of(
                                 Recipient.builder()
-                                        .userId(user.getId())
-                                        .name(this.formatUserName(user))
                                         .email(user.getEmail())
                                         .build()
                         ))
@@ -42,7 +53,7 @@ public class DefaultFormatService implements FormatService {
                         .build())
                 .body(Body.builder()
                         .contentType(template.getContentType())
-                        .content(this.format(template, user))
+                        .content(this.format(template, data))
                         .build())
                 .build();
     }

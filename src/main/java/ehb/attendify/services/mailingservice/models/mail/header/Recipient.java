@@ -11,10 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Recipient {
 
-    private Long userId;
-
-    private String name;
-
     private String email;
 
 }

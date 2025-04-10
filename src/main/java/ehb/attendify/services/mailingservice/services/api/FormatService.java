@@ -7,6 +7,14 @@ import ehb.attendify.services.mailingservice.models.user.User;
 public interface FormatService {
 
     /**
+     * Generates a {@link GenericEmail} with the header parsed out of Object
+     * @param template template to generate from
+     * @param data templating data
+     * @return email
+     */
+    GenericEmail formatEmail(Template template, Object data);
+
+    /**
      * Generates a {@link GenericEmail} addressed to only the user
      * @param template template to generate from
      * @param user receiving user
