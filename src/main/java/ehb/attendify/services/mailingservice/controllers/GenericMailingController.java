@@ -5,7 +5,6 @@ import ehb.attendify.services.mailingservice.services.api.EmailService;
 import ehb.attendify.services.mailingservice.services.api.FormatService;
 import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
 import ehb.attendify.services.mailingservice.services.api.TemplateService;
-import ehb.attendify.services.mailingservice.services.api.UnknownMessageSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.Message;

@@ -3,7 +3,6 @@ package ehb.attendify.services.mailingservice.services;
 import ehb.attendify.services.mailingservice.dto.UserMailPreferencesDto;
 import ehb.attendify.services.mailingservice.models.UserMailPreferences;
 import ehb.attendify.services.mailingservice.repositories.UserMailPreferencesRepository;
-import ehb.attendify.services.mailingservice.services.api.EmailService;
 import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

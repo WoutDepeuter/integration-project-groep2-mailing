@@ -1,11 +1,6 @@
 package ehb.attendify.services.mailingservice.configuration;
 
-import ehb.attendify.services.mailingservice.models.enums.Sender;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Configuration
 public class Constants {
