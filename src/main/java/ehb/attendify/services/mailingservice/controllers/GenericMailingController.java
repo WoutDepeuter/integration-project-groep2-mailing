@@ -34,6 +34,11 @@ public class GenericMailingController {
     public void onGenericEvent(Message message) {
         var exchange = message.getMessageProperties().getReceivedExchange();
         var routingKey = message.getMessageProperties().getReceivedRoutingKey();
+        if (exchange.isBlank() || routingKey.isBlank()) {
+            log.warn("Received an unrouted message on mailing.mail. Who has something misconfigured?! {} bytes, send on {}, send by {}",
+                    message.getBody().length, message.getMessageProperties().getTimestamp(), message.getMessageProperties().getAppId());
+            return;
+        }
 
         log.debug("Received an event on {} via {}", exchange, routingKey);
 

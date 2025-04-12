@@ -10,7 +10,7 @@ public class TemplateDto {
 
     private String routingKey;
 
-    private String version;
+    private Integer version;
 
     private String displayName;
 

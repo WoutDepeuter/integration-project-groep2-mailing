@@ -2,6 +2,7 @@ package ehb.attendify.services.mailingservice.services;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import ehb.attendify.services.mailingservice.configuration.Constants;
+import ehb.attendify.services.mailingservice.models.general.AttendifyEventMessage;
 import ehb.attendify.services.mailingservice.models.general.AttendifyUserMessage;
 import ehb.attendify.services.mailingservice.models.mail.header.Header;
 import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
@@ -59,15 +60,23 @@ public class MessageMapperServiceImpl implements MessageMapperService {
     }
 
     @SneakyThrows
+    private Object eventMapper(Message message) {
+        var routingKey = message.getMessageProperties().getReceivedRoutingKey();
+
+        return switch (routingKey) {
+            default -> xmlMapper.readValue(message.getBody(), AttendifyEventMessage.class);
+        };
+    }
+
+    @SneakyThrows
     private Object userMapper(Message message) {
-        var exchange = message.getMessageProperties().getReceivedExchange();
         var routingKey = message.getMessageProperties().getReceivedRoutingKey();
 
         return switch (routingKey) {
             case Constants.USER_PASSWORD_GENERATED ->
                     xmlMapper.readValue(message.getBody(), AttendifyUserMessage.class);
 
-            default -> throw new UnknownMessageSource(exchange, routingKey);
+            default -> xmlMapper.readValue(message.getBody(), AttendifyUserMessage.class);
         };
     }
 }

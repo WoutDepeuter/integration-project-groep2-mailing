@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class TemplateUpdateResponse {
 
     private final boolean hasUpdated;
-    private final String updatedFrom;
-    private final String updatedTo;
+    private final Integer updatedFrom;
+    private final Integer updatedTo;
 
 }
