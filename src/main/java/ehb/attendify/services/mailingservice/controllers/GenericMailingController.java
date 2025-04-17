@@ -1,30 +1,25 @@
 package ehb.attendify.services.mailingservice.controllers;
 
-import ehb.attendify.services.mailingservice.configuration.Constants;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
-import ehb.attendify.services.mailingservice.models.enums.ContentType;
-import ehb.attendify.services.mailingservice.models.enums.Operation;
-import ehb.attendify.services.mailingservice.models.general.AttendifyMessage;
-import ehb.attendify.services.mailingservice.models.mail.body.Body;
-import ehb.attendify.services.mailingservice.models.mail.header.Header;
-import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
-import ehb.attendify.services.mailingservice.models.user.User;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
+import ehb.attendify.services.mailingservice.services.api.FormatService;
+import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
+import ehb.attendify.services.mailingservice.services.api.TemplateService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class GenericMailingController {
 
     private final EmailService emailService;
-
-    public GenericMailingController(EmailService emailService) {
-        this.emailService = emailService;
-    }
+    private final TemplateService templateService;
+    private final FormatService formatService;
+    private final MessageMapperService messageMapperService;
 
     @RabbitListener(queues = "#{genericGeneratedMailingQueue.name}")
     public void onGenericMail(GenericEmail email) {
@@ -35,49 +30,45 @@ public class GenericMailingController {
         emailService.sendEmail(email);
     }
 
-    @RabbitListener(queues = "#{passwordGeneratedMailingQueue.name}")
-    public void onPasswordGenerated(AttendifyMessage<User> userAttendifyMessage) {
-        log.debug("GenericMailingController#onPasswordGenerated called. Sender: {}, Operation: {}",
-                userAttendifyMessage.getInfo().getSender(), userAttendifyMessage.getInfo().getOperation());
-
-        if (!List.of(Constants.CRM, Constants.POS).contains(userAttendifyMessage.getInfo().getSender().toLowerCase())) {
+    @RabbitListener(queues = "mailing.mail")
+    public void onGenericEvent(Message message) {
+        var exchange = message.getMessageProperties().getReceivedExchange();
+        var routingKey = message.getMessageProperties().getReceivedRoutingKey();
+        if (exchange.isBlank() || routingKey.isBlank()) {
+            log.warn("Received an unrouted message on mailing.mail. Who has something misconfigured?! {} bytes, send on {}, send by {}",
+                    message.getBody().length, message.getMessageProperties().getTimestamp(), message.getMessageProperties().getAppId());
             return;
         }
 
-        if (!userAttendifyMessage.getInfo().getOperation().equals(Operation.CREATE)) {
+        log.debug("Received an event on {} via {}", exchange, routingKey);
+
+        var optionalTemplate = templateService.getTemplate(exchange, routingKey);
+
+        if (optionalTemplate.isEmpty()) {
+            log.debug("Received an event with no configured template on {} via {}", exchange, routingKey);
             return;
         }
 
-        // Terrible code, this exact situation is for the templating stuff
+        var template = optionalTemplate.get();
 
-        User user = userAttendifyMessage.getUser();
-        if (user == null) {
-            log.error("We've received an empty user for a message");
+        Object obj;
+        try {
+            obj = messageMapperService.map(message);
+        } catch (Exception exception) {
+            log.error("Failed to map message on {} via {}", exchange, routingKey, exception);
             return;
         }
 
-        GenericEmail email = GenericEmail.builder()
-                .header(Header.builder()
-                        .recipients(List.of(
-                                Recipient.builder()
-                                        .userId(user.getId())
-                                        // TODO: Name should be formatted by a preference.
-                                        .name(String.format("%s, %s", user.getLastName(), user.getFirstName()))
-                                        .email(user.getEmail())
-                                        .build()
-                        ))
-                        .subject("Password generated") // Is this correct?
-                        .build())
-                .body(Body.builder()
-                        .contentType(ContentType.TEXT_PLAIN)
-                        // ?????
-                        .content(String.format("""
-                                Your account has been created. Your password is: %s
-                                """, user.getPassword()))
-                        .build())
-                .build();
+        log.debug("Map message on {} via {} to class {}", exchange, routingKey, obj.getClass().getSimpleName());
 
-        emailService.sendEmail(email);
+
+        var email = formatService.formatEmail(template, obj);
+        if (email == null) {
+            log.warn("Formatted email is null, possible a header issue");
+            return;
+        }
+
+        this.emailService.sendEmail(email);
     }
 
 }

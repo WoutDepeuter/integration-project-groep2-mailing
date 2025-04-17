@@ -21,9 +21,6 @@ public class Constants {
 
     public static final String INVOICE_SEND = "invoice.send";
 
-
-    public static final String CRM = "crm";
-    public static final String POS = "pos";
-
+    public static final String USER_PASSWORD_GENERATED = "user.passwordGenerated";
 
 }

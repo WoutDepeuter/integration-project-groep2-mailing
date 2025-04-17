@@ -3,7 +3,7 @@ package ehb.attendify.services.mailingservice.services;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
+import com.sendgrid.SendGridAPI;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -23,13 +23,17 @@ import java.io.IOException;
 public class SendGridEmailServiceImpl implements EmailService {
 
     private final MetricService metricService;
-    private final SendGrid sendGrid;
+    private final SendGridAPI sendGrid;
     private final String fromEmail;
 
-    public SendGridEmailServiceImpl(SendGrid sendGrid, @Value("${sendgrid.from-email}") String fromEmail, MetricService metricService) {
+    public SendGridEmailServiceImpl(SendGridAPI sendGrid, @Value("${sendgrid.from-email}") String fromEmail, MetricService metricService) {
         this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;
         this.metricService = metricService;
+
+        if (this.fromEmail == null || this.fromEmail.isEmpty()) {
+            log.warn("Sender email address is null or empty, check if this is intended");
+        }
     }
 
     @Override

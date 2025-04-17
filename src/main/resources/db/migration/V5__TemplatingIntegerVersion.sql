@@ -1,0 +1,1 @@
+ALTER TABLE template MODIFY COLUMN `version` INT;

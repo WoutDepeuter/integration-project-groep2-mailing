@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @JacksonXmlRootElement(namespace = "attendify")
-public class AttendifyMessage<T> {
+public class AttendifyUserMessage {
 
     private Info info;
 
