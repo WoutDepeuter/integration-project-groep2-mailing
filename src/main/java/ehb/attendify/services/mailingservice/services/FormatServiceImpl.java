@@ -12,20 +12,19 @@ import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesSer
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 
-/**
- * Tristan, extend this one when you make it with the engine. So you just have to overwrite {@link FormatService#format(Template, Object)}
- * And then comment @Service out here. And it should work I think? Otherwise, just modify and copy
- */
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class DefaultFormatService implements FormatService {
+public class FormatServiceImpl implements FormatService {
 
     private final UserMailPreferencesService userMailPreferencesService;
     private final MessageMapperService messageMapperService;
+    private final TemplateEngine templateEngine;
 
     @Override
     public GenericEmail formatEmail(Template template, Object data) {
@@ -63,7 +62,9 @@ public class DefaultFormatService implements FormatService {
 
     @Override
     public String format(Template template, Object data) {
-        return template.getTemplate();
+        Context ctx = new Context();
+        ctx.setVariable("data", data);
+        return this.templateEngine.process(template.getTemplate(), ctx);
     }
 
     @Override

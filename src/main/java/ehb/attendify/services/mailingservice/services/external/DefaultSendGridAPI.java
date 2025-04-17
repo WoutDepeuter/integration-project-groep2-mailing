@@ -55,11 +55,15 @@ public class DefaultSendGridAPI implements SendGridAPI {
 
     @Override
     public Response makeCall(Request request) throws IOException {
-        return null;
+        var res = new Response();
+        res.setStatusCode(200);
+        return res;
     }
 
     @Override
     public Response api(Request request) throws IOException {
-        return null;
+        var res = new Response();
+        res.setStatusCode(200);
+        return res;
     }
 }

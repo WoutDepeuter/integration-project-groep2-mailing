@@ -45,6 +45,8 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-bom:2.24.3")
     implementation("org.apache.logging.log4j:log4j-api:2.24.3")
 
+    implementation("org.thymeleaf:thymeleaf:3.1.3.RELEASE")
+
     implementation("org.flywaydb:flyway-core:11.4.1")
     implementation("org.flywaydb:flyway-mysql:11.4.1")
 

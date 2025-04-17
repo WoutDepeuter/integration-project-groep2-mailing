@@ -12,6 +12,9 @@ import org.springframework.amqp.support.converter.Jackson2XmlMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import java.util.Optional;
 
@@ -47,6 +50,15 @@ public class Providers {
         }
 
         return new SendGrid(apiKey.get());
+    }
+
+    @Bean
+    public TemplateEngine templateEngine() {
+        TemplateEngine templateEngine = new TemplateEngine();
+        StringTemplateResolver resolver = new StringTemplateResolver();
+        resolver.setTemplateMode(TemplateMode.HTML);
+        templateEngine.setTemplateResolver(resolver);
+        return templateEngine;
     }
 
 }
