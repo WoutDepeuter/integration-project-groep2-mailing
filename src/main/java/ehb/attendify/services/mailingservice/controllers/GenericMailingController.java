@@ -4,7 +4,9 @@ import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
 import ehb.attendify.services.mailingservice.services.api.FormatService;
 import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
+import ehb.attendify.services.mailingservice.services.api.MetricService;
 import ehb.attendify.services.mailingservice.services.api.TemplateService;
+import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.Message;
@@ -20,6 +22,7 @@ public class GenericMailingController {
     private final TemplateService templateService;
     private final FormatService formatService;
     private final MessageMapperService messageMapperService;
+    private final MetricService metricService;
 
     @RabbitListener(queues = "#{genericGeneratedMailingQueue.name}")
     public void onGenericMail(GenericEmail email) {
@@ -48,6 +51,12 @@ public class GenericMailingController {
             log.debug("Received an event with no configured template on {} via {}", exchange, routingKey);
             return;
         }
+
+        Counter.builder("incoming_mail")
+                .tag("exchange", exchange)
+                .tag("routing_key", routingKey)
+                .register(this.metricService.getRegistry())
+                .increment();
 
         var template = optionalTemplate.get();
 

@@ -6,6 +6,8 @@ import com.sendgrid.SendGridAPI;
 import ehb.attendify.services.mailingservice.mappers.ByteArrayToStringMapper;
 import ehb.attendify.services.mailingservice.mappers.StringToByteArrayMapper;
 import ehb.attendify.services.mailingservice.services.external.DefaultSendGridAPI;
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.support.converter.Jackson2XmlMessageConverter;
@@ -59,6 +61,11 @@ public class Providers {
         resolver.setTemplateMode(TemplateMode.HTML);
         templateEngine.setTemplateResolver(resolver);
         return templateEngine;
+    }
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
     }
 
 }

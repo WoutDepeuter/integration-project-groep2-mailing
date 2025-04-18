@@ -12,6 +12,7 @@ import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
 import ehb.attendify.services.mailingservice.services.api.MetricService;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,11 @@ public class SendGridEmailServiceImpl implements EmailService {
         mail.addPersonalization(personalization);
         Content emailContent = new Content(email.getBody().getContentType().getType(), email.getBody().getContent());
         mail.addContent(emailContent);
+        this.send(mail);
+    }
 
+    @Timed(description = "Time spend sending requests to SendGrid")
+    private void send(Mail mail) {
         Request request = new Request();
         try {
             request.setMethod(Method.POST);
