@@ -2,7 +2,7 @@ name: Gradle Build and Test
 
 on:
   push:
-    branches: []
+    branches: ["fskjf"]
   workflow_dispatch:
 
 jobs:

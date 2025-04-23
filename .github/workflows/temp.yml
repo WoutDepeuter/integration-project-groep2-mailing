@@ -13,10 +13,16 @@ jobs:
     steps:
       - name: Write private ssh key
         run: |
-          mkdir -p ~/.ssh
-          printf '%s' "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 400 ~/.ssh/id_rsa
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_KEY: ${{secrets.SSH_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
 
       - name: SSH into server and pull docker image
         run: |
-          ssh -p 60022 -o StrictHostKeyChecking=no ehbstudent@integrationproject-2425s2-002.westeurope.cloudapp.azure.com "docker pull ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest"
+          ssh -i $SSH_KEY_PATH -p 60022 -o StrictHostKeyChecking=no ehbstudent@integrationproject-2425s2-002.westeurope.cloudapp.azure.com "docker pull ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest"
