@@ -69,5 +69,14 @@ jobs:
     needs: upload-container
 
     steps:
-      - name: Placeholder for Deployment
-        run: echo "Deployment step will go here!"
+      - name: Write private ssh key
+        run: |
+          printf '%s' "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+
+      - name: Add host to known hosts
+        run: |
+          ssh-keyscan integrationproject-2425s2-002.westeurope.cloudapp.azure.com >> ~/.ssh/known_hosts
+
+      - name: SSH into server and pull docker image
+        run: |
+          ssh -p 60022 ehbstudent@integrationproject-2425s2-002.westeurope.cloudapp.azure.com "docker pull ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest"
