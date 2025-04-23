@@ -3,7 +3,7 @@ package ehb.attendify.services.mailingservice.services;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
+import com.sendgrid.SendGridAPI;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -11,6 +11,8 @@ import com.sendgrid.helpers.mail.objects.Personalization;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
+import ehb.attendify.services.mailingservice.services.api.MetricService;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,12 +23,18 @@ import java.io.IOException;
 @Service
 public class SendGridEmailServiceImpl implements EmailService {
 
-    private final SendGrid sendGrid;
+    private final MetricService metricService;
+    private final SendGridAPI sendGrid;
     private final String fromEmail;
 
-    public SendGridEmailServiceImpl(SendGrid sendGrid, @Value("${sendgrid.from-email}") String fromEmail) {
+    public SendGridEmailServiceImpl(SendGridAPI sendGrid, @Value("${sendgrid.from-email}") String fromEmail, MetricService metricService) {
         this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;
+        this.metricService = metricService;
+
+        if (this.fromEmail == null || this.fromEmail.isEmpty()) {
+            log.warn("Sender email address is null or empty, check if this is intended");
+        }
     }
 
     @Override
@@ -62,7 +70,11 @@ public class SendGridEmailServiceImpl implements EmailService {
         mail.addPersonalization(personalization);
         Content emailContent = new Content(email.getBody().getContentType().getType(), email.getBody().getContent());
         mail.addContent(emailContent);
+        this.send(mail);
+    }
 
+    @Timed(description = "Time spend sending requests to SendGrid")
+    private void send(Mail mail) {
         Request request = new Request();
         try {
             request.setMethod(Method.POST);
@@ -72,6 +84,7 @@ public class SendGridEmailServiceImpl implements EmailService {
 
             if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
                 log.debug("Email was send successfully: {}", response.getBody());
+                this.metricService.getMailCounter().increment();
                 return;
             }
 

@@ -36,6 +36,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
     implementation("org.springframework.amqp:spring-rabbit-stream")
 
     implementation("org.modelmapper:modelmapper:3.2.1")
@@ -44,6 +46,8 @@ dependencies {
 
     implementation("org.apache.logging.log4j:log4j-bom:2.24.3")
     implementation("org.apache.logging.log4j:log4j-api:2.24.3")
+
+    implementation("org.thymeleaf:thymeleaf:3.1.3.RELEASE")
 
     implementation("org.flywaydb:flyway-core:11.4.1")
     implementation("org.flywaydb:flyway-mysql:11.4.1")
