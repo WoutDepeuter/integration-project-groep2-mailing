@@ -2,7 +2,7 @@ name: Gradle Build and Test
 
 on:
   push:
-    branches: ["main"]
+    branches: []
   workflow_dispatch:
 
 jobs:

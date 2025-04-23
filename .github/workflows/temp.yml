@@ -1,0 +1,22 @@
+name: Gradle Build and Test
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Write private ssh key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+
+      - name: SSH into server and pull docker image
+        run: |
+          ssh -p 60022 -o StrictHostKeyChecking=no ehbstudent@integrationproject-2425s2-002.westeurope.cloudapp.azure.com "docker pull ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest"
