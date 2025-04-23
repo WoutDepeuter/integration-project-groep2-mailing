@@ -25,4 +25,4 @@ jobs:
 
       - name: SSH into server and pull docker image
         run: |
-          ssh -i $SSH_KEY_PATH -p 60022 -o StrictHostKeyChecking=no ehbstudent@integrationproject-2425s2-002.westeurope.cloudapp.azure.com "docker pull ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest"
+          ssh -i ${{ github.workspace }}/../private.key -p 60022 -o StrictHostKeyChecking=no ehbstudent@integrationproject-2425s2-002.westeurope.cloudapp.azure.com "docker pull ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest"
