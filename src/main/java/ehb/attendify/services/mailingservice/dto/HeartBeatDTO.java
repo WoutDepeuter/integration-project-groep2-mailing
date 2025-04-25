@@ -1,24 +1,18 @@
 package ehb.attendify.services.mailingservice.dto;
 
-import ehb.attendify.services.mailingservice.heartbeat.HeartBeatToXml;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@JacksonXmlRootElement(localName = "heartbeat")
 public class HeartBeatDTO {
 
+    @JacksonXmlProperty(localName = "sender")
     private final String sender;
 
-    private final String containerName;
-
+    @JacksonXmlProperty(localName = "timestamp")
     private final long timestamp;
-
-    public static HeartBeatToXml toXml(HeartBeatDTO dto) {
-        return new HeartBeatToXml(
-                dto.getSender(),
-                dto.getContainerName(),
-                dto.getTimestamp()
-        );
-    }
 }

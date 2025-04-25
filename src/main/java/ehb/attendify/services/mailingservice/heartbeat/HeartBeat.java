@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,17 +13,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Log4j2
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class HeartBeat {
 
+    private final DataSource dataSource;
     private final RabbitTemplate rabbitTemplate;
+    private final Queue monitoringHeartbeatQueue;
 
-    @Autowired
-    private Queue monitoringHeartbeatQueue;
-
-    @Autowired
-    private DataSource dataSource;
+    private long lastBeat = -1;
 
     public boolean isDatabaseAlive() {
         try (Connection connection = dataSource.getConnection()) {
@@ -41,13 +38,14 @@ public class HeartBeat {
             return;
         }
 
-        String queueName = monitoringHeartbeatQueue.getName();
+        long now = System.currentTimeMillis();
+        if (lastBeat == -1) {
+            lastBeat = now;
+        }
+        log.debug("Sending heartbeat, last beat {}ms ago", now - lastBeat);
+        lastBeat = now;
 
-        HeartBeatDTO dto = new HeartBeatDTO("mailing-service", "mailing-container", System.currentTimeMillis());
-        HeartBeatToXml xml = HeartBeatDTO.toXml(dto);
-        log.debug("Sending heartbeat to {} queue", queueName);
-
-        rabbitTemplate.convertAndSend(queueName, xml);
+        this.rabbitTemplate.convertAndSend(this.monitoringHeartbeatQueue.getName(), new HeartBeatDTO("mailing-service", now));
     }
 }
 
