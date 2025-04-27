@@ -2,6 +2,11 @@
 services:
   mailing-service:
     image: ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest
+    labels:
+      co.elastic.metrics/module: prometheus
+      co.elastic.metrics/metricsets: collector
+      co.elastic.metrics/metrics_path: /actuator/prometheus
+      co.elastic.metrics/period: 10s
     networks:
       - attendify_net
       - mailing
