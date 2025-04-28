@@ -1,5 +1,7 @@
 package ehb.attendify.services.mailingservice.models.template;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import ehb.attendify.services.mailingservice.deserializers.UserLocationTypeDeserializer;
 import ehb.attendify.services.mailingservice.models.enums.ContentType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,7 +44,7 @@ public class Template {
 
     private UserLocationType userLocationType;
 
-
+    @JsonDeserialize(using = UserLocationTypeDeserializer.class)
     public enum UserLocationType {
         SINGLE,
         ARRAY,
