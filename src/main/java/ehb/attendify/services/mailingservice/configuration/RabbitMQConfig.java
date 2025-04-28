@@ -23,6 +23,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue monitoringHeartbeatQueue() {
+        return new Queue("monitoring.heartbeat", true);
+    }
+
+    @Bean
     Binding genericMailingBinding(Queue genericGeneratedMailingQueue, TopicExchange mailingExchange) {
         return BindingBuilder.bind(genericGeneratedMailingQueue)
                 .to(mailingExchange)
