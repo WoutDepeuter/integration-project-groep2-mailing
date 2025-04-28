@@ -76,8 +76,8 @@ public class GenericMailingController {
         GenericEmail email;
         try {
             email = formatService.formatEmail(template, obj);
-        } catch (InvalidUserLocation ignored) {
-            log.error("Failed to construct email, check your template!");
+        } catch (Exception exception) {
+            log.error("Failed to construct email, check your template!", exception);
             return;
         }
 
