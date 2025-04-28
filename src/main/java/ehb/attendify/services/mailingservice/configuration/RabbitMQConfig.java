@@ -18,20 +18,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue passwordGeneratedMailingQueue() {
-        return new Queue("mailing.password.generated", true);
-    }
-
-    @Bean
     public Queue genericGeneratedMailingQueue() {
         return new Queue("mailing.generic", true);
-    }
-
-    @Bean
-    Binding passwordGeneratedMailingBinding(Queue passwordGeneratedMailingQueue, TopicExchange mailingExchange) {
-        return BindingBuilder.bind(passwordGeneratedMailingQueue)
-                .to(mailingExchange)
-                .with("passwordGenerated");
     }
 
     @Bean
