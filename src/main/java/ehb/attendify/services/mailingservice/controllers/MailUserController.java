@@ -1,8 +1,8 @@
 package ehb.attendify.services.mailingservice.controllers;
 
-import ehb.attendify.services.mailingservice.dto.UserMailPreferencesDto;
+import ehb.attendify.services.mailingservice.dto.MailUserDto;
 import ehb.attendify.services.mailingservice.models.general.AttendifyUserMessage;
-import ehb.attendify.services.mailingservice.services.api.UserMailPreferencesService;
+import ehb.attendify.services.mailingservice.services.api.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -21,45 +21,45 @@ import java.util.NoSuchElementException;
 @RequestMapping("/UserMailPreferences")
 @RequiredArgsConstructor
 @Log4j2
-public class UserMailPreferencesController {
+public class MailUserController {
 
-    private final UserMailPreferencesService mailPreferencesService;
+    private final UserService userService;
     private final ModelMapper mapper;
 
     @RabbitListener(queues = "mailing.user")
     public void onUserUpdate(AttendifyUserMessage msg) {
-        var dto = UserMailPreferencesDto.builder()
+        var dto = MailUserDto.builder()
                 .mailGreetingType(msg.getUser().getTitle())
+                .firstName(msg.getUser().getFirstName())
+                .lastName(msg.getUser().getLastName())
                 .build();
-        var email = msg.getUser().getEmail();
 
-        this.mailPreferencesService.updatePreferencesForUserByEmail(email, dto);
-        log.debug("Updated UserMailPreferences for {}", email);
+        this.userService.updatePreferencesForUser(msg.getUser().getId(), dto);
+        log.debug("Updated UserMailPreferences for {}", msg.getUser().getId());
     }
 
     @GetMapping("/all")
-    public Iterable<UserMailPreferencesDto> getAll() {
-        return this.mailPreferencesService.getAllPreferences()
+    public Iterable<MailUserDto> getAll() {
+        return this.userService.getAllPreferences()
                 .stream()
-                .map(p -> mapper.map(p, UserMailPreferencesDto.class))
+                .map(p -> mapper.map(p, MailUserDto.class))
                 .toList();
     }
 
     @GetMapping("/{userId}")
-    public UserMailPreferencesDto getForUser(@PathVariable Long userId) {
-        var preferences = this.mailPreferencesService.getPreferencesForUser(userId)
+    public MailUserDto getForUser(@PathVariable String userId) {
+        var preferences = this.userService.getPreferencesForUser(userId)
                 .orElseThrow(NoSuchElementException::new);
-        return this.mapper.map(preferences, UserMailPreferencesDto.class);
+        return this.mapper.map(preferences, MailUserDto.class);
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<String> updateForUser(@RequestBody UserMailPreferencesDto preferences,
-                                                @PathVariable Long userId) {
-
+    public ResponseEntity<String> updateForUser(@RequestBody MailUserDto preferences,
+                                                @PathVariable String userId) {
         log.info("Received request for user ID: {}", userId);
         log.info("Mail Greeting Type: {}", preferences.getMailGreetingType());
 
-        this.mailPreferencesService.updatePreferencesForUser(userId, preferences);
+        this.userService.updatePreferencesForUser(userId, preferences);
 
         return ResponseEntity.ok("User preferences updated successfully!");
     }

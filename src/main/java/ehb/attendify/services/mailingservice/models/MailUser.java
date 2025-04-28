@@ -11,17 +11,21 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class UserMailPreferences {
+public class MailUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(unique = true)
-    private Long userId;
+    private String userId;
 
     @Column(unique = true)
     private String email;
+
+    private String firstName;
+
+    private String lastName;
 
     private String mailGreetingType;
 

@@ -26,19 +26,19 @@ public interface FormatService {
 
     /**
      * Formats the user's name according to the preferences
-     * @param user user parsed from xml
+     * @param userId the user
      * @param title include title
      * @return string
      */
-    String formatUserName(User user, boolean title);
+    String formatUserName(String userId, boolean title);
 
     /**
      * Formats the user's name according to the preferences without a title
-     * @param user user parsed from xml
+     * @param userId the user
      * @return string
      */
-    default String formatUserName(User user) {
-        return formatUserName(user, false);
+    default String formatUserName(String userId) {
+        return formatUserName(userId, false);
     }
 
 

@@ -8,6 +8,7 @@ import ehb.attendify.services.mailingservice.models.mail.header.Recipient;
 import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.services.api.MessageMapperService;
 import ehb.attendify.services.mailingservice.exceptions.UnknownMessageSource;
+import ehb.attendify.services.mailingservice.services.api.UserService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -24,6 +25,7 @@ import java.util.List;
 public class MessageMapperServiceImpl implements MessageMapperService {
 
     private final XmlMapper xmlMapper;
+    private final UserService userService;
 
     @Override
     @Timed(description = "Time spend converting unknown messages to their Java objects")
@@ -79,7 +81,6 @@ public class MessageMapperServiceImpl implements MessageMapperService {
         }
 
         var userId = node.asText();
-        // TODO: Get email
-        return Recipient.builder().email(userId).build();
+        return Recipient.builder().email(this.userService.getEmail(userId).orElse(userId)).build();
     }
 }
