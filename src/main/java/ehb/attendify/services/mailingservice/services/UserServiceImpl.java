@@ -16,7 +16,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final MailUserRepository mailUserRepository;
-    private final ModelMapper mapper;
 
     @Override
     public Optional<String> getEmail(String userId) {
@@ -29,6 +28,11 @@ public class UserServiceImpl implements UserService {
         mailUser.setUserId(userId);
         mailUser.setEmail(email);
         this.mailUserRepository.save(mailUser);
+    }
+
+    @Override
+    public void delete(String userId) {
+        this.mailUserRepository.deleteByUserId(userId);
     }
 
     @Override

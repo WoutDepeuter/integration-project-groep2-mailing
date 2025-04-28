@@ -12,6 +12,8 @@ public interface UserService {
 
     void setEmail(String userId, String email);
 
+    void delete(String userId);
+
     Optional<MailUser> getPreferencesForUser(String userId);
 
     List<MailUser> getAllPreferences();

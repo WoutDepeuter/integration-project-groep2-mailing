@@ -1,6 +1,7 @@
 package ehb.attendify.services.mailingservice.controllers;
 
 import ehb.attendify.services.mailingservice.dto.MailUserDto;
+import ehb.attendify.services.mailingservice.models.enums.Operation;
 import ehb.attendify.services.mailingservice.models.general.AttendifyUserMessage;
 import ehb.attendify.services.mailingservice.services.api.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,13 @@ public class MailUserController {
                 .lastName(msg.getUser().getLastName())
                 .build();
 
-        this.userService.updatePreferencesForUser(msg.getUser().getId(), dto);
-        log.debug("Updated UserMailPreferences for {}", msg.getUser().getId());
+        if (msg.getInfo().getOperation().equals(Operation.DELETE)) {
+            this.userService.delete(msg.getUser().getId());
+            log.info("User {} has been deleted form the database", msg.getUser().getId());
+        } else {
+            this.userService.updatePreferencesForUser(msg.getUser().getId(), dto);
+            log.debug("Updated UserMailPreferences for {}", msg.getUser().getId());
+        }
     }
 
     @GetMapping("/all")

@@ -13,4 +13,6 @@ public interface MailUserRepository extends JpaRepository<MailUser, Long> {
 
     Optional<MailUser> findByEmail(String email);
 
+    void deleteByUserId(String userId);
+
 }
