@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import ehb.attendify.services.mailingservice.models.template.Template;
+import ehb.attendify.services.mailingservice.models.template.UserLocationType;
 
 import java.io.IOException;
 
-public class UserLocationTypeDeserializer extends JsonDeserializer<Template.UserLocationType> {
+public class UserLocationTypeDeserializer extends JsonDeserializer<UserLocationType> {
     @Override
-    public Template.UserLocationType deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public UserLocationType deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         String value = p.getText();
         int intValue = p.getIntValue();
 
@@ -18,7 +18,7 @@ public class UserLocationTypeDeserializer extends JsonDeserializer<Template.User
             return null;
         }
 
-        for (Template.UserLocationType locationType : Template.UserLocationType.values()) {
+        for (UserLocationType locationType : UserLocationType.values()) {
             if (locationType.name().equalsIgnoreCase(value)) {
                 return locationType;
             }

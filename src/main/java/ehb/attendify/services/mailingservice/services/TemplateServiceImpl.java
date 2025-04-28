@@ -38,6 +38,8 @@ public class TemplateServiceImpl implements TemplateService {
         template.setDisplayName(dto.getDisplayName());
         template.setSubject(dto.getSubject());
         template.setContentType(dto.getContentType());
+        template.setUserLocation(dto.getUserLocation());
+        template.setUserLocationType(dto.getUserLocationType());
 
         templateRepository.save(template);
 
