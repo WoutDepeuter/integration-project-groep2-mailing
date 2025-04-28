@@ -49,8 +49,12 @@ public class FormatServiceImpl implements FormatService {
 
     @Override
     public String formatUserName(String userId, boolean title) {
-        var mailUser = this.userService.getPreferencesForUser(userId).orElseThrow();
+        var opt = this.userService.getPreferencesForUser(userId);
+        if (opt.isEmpty()) {
+            return userId;
+        }
 
+        var mailUser = opt.get();
         StringBuilder builder = new StringBuilder();
 
         if (title && !mailUser.getMailGreetingType().isEmpty()) {
