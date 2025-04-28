@@ -12,7 +12,6 @@ public class OperationDeserializer extends JsonDeserializer<Operation> {
     @Override
     public Operation deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException, JacksonException {
         String value = p.getText();
-        int intValue = p.getIntValue();
         if (value == null) {
             return null;
         }
@@ -21,7 +20,10 @@ public class OperationDeserializer extends JsonDeserializer<Operation> {
             if (value.equalsIgnoreCase(operation.name())) {
                 return operation;
             }
+        }
 
+        int intValue = p.getIntValue();
+        for (Operation operation : Operation.values()) {
             if (operation.ordinal() == intValue) {
                 return operation;
             }

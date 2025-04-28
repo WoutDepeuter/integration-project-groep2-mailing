@@ -12,7 +12,6 @@ public class UserLocationTypeDeserializer extends JsonDeserializer<UserLocationT
     @Override
     public UserLocationType deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         String value = p.getText();
-        int intValue = p.getIntValue();
 
         if (value == null) {
             return null;
@@ -22,11 +21,13 @@ public class UserLocationTypeDeserializer extends JsonDeserializer<UserLocationT
             if (locationType.name().equalsIgnoreCase(value)) {
                 return locationType;
             }
+        }
 
+        int intValue = p.getIntValue();
+        for (UserLocationType locationType : UserLocationType.values()) {
             if (locationType.ordinal() == intValue) {
                 return locationType;
             }
-
         }
 
         return null;
