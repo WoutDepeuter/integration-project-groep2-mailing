@@ -1,5 +1,7 @@
 package ehb.attendify.services.mailingservice.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import ehb.attendify.services.mailingservice.exceptions.InvalidUserLocation;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.mail.body.Body;
 import ehb.attendify.services.mailingservice.models.mail.header.Header;
@@ -27,7 +29,7 @@ public class FormatServiceImpl implements FormatService {
     private final TemplateEngine templateEngine;
 
     @Override
-    public GenericEmail formatEmail(Template template, Object data) {
+    public GenericEmail formatEmail(Template template, JsonNode data) throws InvalidUserLocation {
         var header = this.messageMapperService.extractHeader(template, data);
         if (header == null) {
             return null;
@@ -43,25 +45,7 @@ public class FormatServiceImpl implements FormatService {
     }
 
     @Override
-    public GenericEmail formatSimpleEmail(Template template, User user, Object data) {
-        return GenericEmail.builder()
-                .header(Header.builder()
-                        .recipients(List.of(
-                                Recipient.builder()
-                                        .email(user.getEmail())
-                                        .build()
-                        ))
-                        .subject(template.getSubject())
-                        .build())
-                .body(Body.builder()
-                        .contentType(template.getContentType())
-                        .content(this.format(template, data))
-                        .build())
-                .build();
-    }
-
-    @Override
-    public String format(Template template, Object data) {
+    public String format(Template template, JsonNode data) {
         Context ctx = new Context();
         ctx.setVariable("data", data);
         return this.templateEngine.process(template.getTemplate(), ctx);

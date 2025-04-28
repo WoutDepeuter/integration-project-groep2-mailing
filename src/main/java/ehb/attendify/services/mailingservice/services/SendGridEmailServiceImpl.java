@@ -41,6 +41,11 @@ public class SendGridEmailServiceImpl implements EmailService {
     public void sendEmail(GenericEmail email) {
         log.debug("SendGridEmailServiceImpl#sendEmail received {}, sending from {}", email, fromEmail);
 
+        if (email.getHeader() == null) {
+            log.error("Received an email without header, cannot send");
+            return;
+        }
+
         Email from = new Email(fromEmail);
         Mail mail = new Mail();
         mail.setFrom(from);

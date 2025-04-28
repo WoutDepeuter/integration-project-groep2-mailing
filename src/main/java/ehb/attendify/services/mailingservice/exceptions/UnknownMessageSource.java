@@ -1,4 +1,4 @@
-package ehb.attendify.services.mailingservice.services.api;
+package ehb.attendify.services.mailingservice.exceptions;
 
 public class UnknownMessageSource extends RuntimeException {
     public UnknownMessageSource(String exchange, String routingKey) {
