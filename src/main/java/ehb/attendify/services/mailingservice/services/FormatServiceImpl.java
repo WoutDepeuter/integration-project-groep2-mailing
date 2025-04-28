@@ -43,6 +43,7 @@ public class FormatServiceImpl implements FormatService {
     public String format(Template template, JsonNode data) {
         Context ctx = new Context();
         ctx.setVariable("data", data);
+        ctx.setVariable("formatter", (FormatService)this);
         return this.templateEngine.process(template.getTemplate(), ctx);
     }
 
