@@ -33,7 +33,11 @@ services:
       - 'MYSQL_PASSWORD=changeme'
       - 'MYSQL_ROOT_PASSWORD=changeme'
       - 'MYSQL_USER=mailing_dev'
-
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p=changeme" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 volumes:
   mysql-mailing: {}
 

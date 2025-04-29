@@ -8,6 +8,11 @@ services:
       - 'MYSQL_USER=mailing_dev'
     ports:
       - '3306:3306'
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p=secret" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   rabbitmq:
     image: 'rabbitmq:latest'
     volumes:
