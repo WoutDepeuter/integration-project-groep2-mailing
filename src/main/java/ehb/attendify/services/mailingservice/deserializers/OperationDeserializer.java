@@ -29,6 +29,6 @@ public class OperationDeserializer extends JsonDeserializer<Operation> {
             }
         }
 
-        return null;
+        throw new IllegalArgumentException("Invalid value for Operation: " + value);
     }
 }
