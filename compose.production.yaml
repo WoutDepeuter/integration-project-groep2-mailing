@@ -13,11 +13,11 @@ services:
     environment:
       - 'LOG_LEVEL=debug'
       - 'DB_HOST=mysql'
-      - 'DB_AUTH_PASS=changeme'
-      - 'RABBITMQ_HOST=changeme'
-      - 'RABBITMQ_PASS=changeme'
-      - 'SENDGRID_API_KEY=changeme'
-      - 'SENDGRID_FROM_EMAIL=changeme'
+      - 'DB_AUTH_PASS=${DB_AUTH_PASS}'
+      - 'RABBITMQ_HOST=${RABBITMQ_HOST}'
+      - 'RABBITMQ_PASS=${RABBITMQ_PASS}'
+      - 'SENDGRID_API_KEY=${SENDGRID_API_KEY}'
+      - 'SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL}'
     depends_on:
       mysql:
         condition: service_healthy
@@ -29,12 +29,12 @@ services:
     volumes:
       - mysql-mailing:/var/lib/mysql:rw
     environment:
-      - 'MYSQL_DATABASE=mailing_service'
-      - 'MYSQL_PASSWORD=changeme'
-      - 'MYSQL_ROOT_PASSWORD=changeme'
-      - 'MYSQL_USER=mailing_dev'
+      - 'MYSQL_DATABASE=${DB_NAME}'
+      - 'MYSQL_PASSWORD=${DB_AUTH_PASS}'
+      - 'MYSQL_ROOT_PASSWORD=${DB_AUTH_ROOT_PASS}'
+      - 'MYSQL_USER=${DB_AUTH_USER}'
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p=changeme" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p=$DB_AUTH_ROOT_PASS" ]
       interval: 5s
       timeout: 5s
       retries: 5
