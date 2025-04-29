@@ -38,4 +38,8 @@ public class Template {
     @Lob
     private String template;
 
+    private String userLocation;
+
+    private UserLocationType userLocationType;
+
 }

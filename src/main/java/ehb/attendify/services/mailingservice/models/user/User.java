@@ -8,7 +8,7 @@ import lombok.Data;
 @JacksonXmlRootElement(namespace = "user", localName = "user")
 public class User {
 
-    private Long id;
+    private String id;
 
     @JacksonXmlProperty(localName = "first_name")
     private String firstName;

@@ -22,6 +22,13 @@ public class OperationDeserializer extends JsonDeserializer<Operation> {
             }
         }
 
+        int intValue = p.getIntValue();
+        for (Operation operation : Operation.values()) {
+            if (operation.ordinal() == intValue) {
+                return operation;
+            }
+        }
+
         return null;
     }
 }

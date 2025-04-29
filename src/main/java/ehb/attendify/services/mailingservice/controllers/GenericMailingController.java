@@ -1,5 +1,7 @@
 package ehb.attendify.services.mailingservice.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import ehb.attendify.services.mailingservice.exceptions.InvalidUserLocation;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.services.api.EmailService;
 import ehb.attendify.services.mailingservice.services.api.FormatService;
@@ -60,7 +62,7 @@ public class GenericMailingController {
 
         var template = optionalTemplate.get();
 
-        Object obj;
+        JsonNode obj;
         try {
             obj = messageMapperService.map(message);
         } catch (Exception exception) {
@@ -71,12 +73,18 @@ public class GenericMailingController {
         log.debug("Map message on {} via {} to class {}", exchange, routingKey, obj.getClass().getSimpleName());
 
 
-        var email = formatService.formatEmail(template, obj);
+        GenericEmail email;
+        try {
+            email = formatService.formatEmail(template, obj);
+        } catch (Exception exception) {
+            log.error("Failed to construct email, check your template!", exception);
+            return;
+        }
+
         if (email == null) {
             log.warn("Formatted email is null, possible a header issue");
             return;
         }
-
         this.emailService.sendEmail(email);
     }
 

@@ -1,6 +1,7 @@
 package ehb.attendify.services.mailingservice.dto;
 
 import ehb.attendify.services.mailingservice.models.enums.ContentType;
+import ehb.attendify.services.mailingservice.models.template.UserLocationType;
 import lombok.Data;
 
 @Data
@@ -19,5 +20,9 @@ public class TemplateDto {
     private String subject;
 
     private String template;
+
+    private String userLocation;
+
+    private UserLocationType userLocationType;
 
 }

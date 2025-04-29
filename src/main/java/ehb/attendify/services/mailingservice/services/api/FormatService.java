@@ -1,5 +1,7 @@
 package ehb.attendify.services.mailingservice.services.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import ehb.attendify.services.mailingservice.exceptions.InvalidUserLocation;
 import ehb.attendify.services.mailingservice.models.GenericEmail;
 import ehb.attendify.services.mailingservice.models.template.Template;
 import ehb.attendify.services.mailingservice.models.user.User;
@@ -12,16 +14,7 @@ public interface FormatService {
      * @param data templating data
      * @return email
      */
-    GenericEmail formatEmail(Template template, Object data);
-
-    /**
-     * Generates a {@link GenericEmail} addressed to only the user
-     * @param template template to generate from
-     * @param user receiving user
-     * @param data templating data
-     * @return email
-     */
-    GenericEmail formatSimpleEmail(Template template, User user, Object data);
+    GenericEmail formatEmail(Template template, JsonNode data) throws InvalidUserLocation;
 
     /**
      * Returns the template formatted according to the data
@@ -29,23 +22,23 @@ public interface FormatService {
      * @param data Object to use as data map
      * @return string
      */
-    String format(Template template, Object data);
+    String format(Template template, JsonNode data);
 
     /**
      * Formats the user's name according to the preferences
-     * @param user user parsed from xml
+     * @param userId the user
      * @param title include title
      * @return string
      */
-    String formatUserName(User user, boolean title);
+    String formatUserName(String userId, boolean title);
 
     /**
      * Formats the user's name according to the preferences without a title
-     * @param user user parsed from xml
+     * @param userId the user
      * @return string
      */
-    default String formatUserName(User user) {
-        return formatUserName(user, false);
+    default String formatUserName(String userId) {
+        return formatUserName(userId, false);
     }
 
 

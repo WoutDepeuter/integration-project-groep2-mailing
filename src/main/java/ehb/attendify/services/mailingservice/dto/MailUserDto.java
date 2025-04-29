@@ -7,8 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UserMailPreferencesDto {
+public class MailUserDto {
 
     private String mailGreetingType;
+    
+    private String firstName;
+    
+    private String lastName;
 
 }

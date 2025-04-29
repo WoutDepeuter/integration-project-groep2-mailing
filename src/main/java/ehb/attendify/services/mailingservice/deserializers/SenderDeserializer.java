@@ -12,13 +12,19 @@ public class SenderDeserializer extends JsonDeserializer<Sender> {
     @Override
     public Sender deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         String value = p.getText();
-
         if (value == null) {
             return null;
         }
 
         for (Sender sender : Sender.values()) {
             if (sender.name().equalsIgnoreCase(value)) {
+                return sender;
+            }
+        }
+
+        int intValue = p.getIntValue();
+        for (Sender sender : Sender.values()) {
+            if (sender.ordinal() == intValue) {
                 return sender;
             }
         }
