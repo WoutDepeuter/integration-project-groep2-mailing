@@ -4,6 +4,7 @@ services:
     image: ghcr.io/woutdepeuter/integration-project-groep2-mailing:latest
     labels:
       co.elastic.metrics/module: prometheus
+      co.elastic.metrics/hosts: '$${data.host}:8080'
       co.elastic.metrics/metricsets: collector
       co.elastic.metrics/metrics_path: /actuator/prometheus
       co.elastic.metrics/period: 10s
