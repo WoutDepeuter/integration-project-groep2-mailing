@@ -31,7 +31,7 @@ public class HeartBeat {
         }
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 1000)
     public void sendHeartbeat() {
         if (!isDatabaseAlive()) {
             log.warn("database is not alive, skipping sending heartbeat");
