@@ -59,12 +59,13 @@ public class SenderDeserializerTest {
 
 
     @Test
-    void testDeserializeInvalidOrdinalReturnsNull() throws Exception {
+    void testDeserializeInvalidOrdinalThrowsException() throws Exception {
         when(parser.getText()).thenReturn("99");
         when(parser.getIntValue()).thenReturn(99);
 
-        Sender result = deserializer.deserialize(parser, context);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> {
+            deserializer.deserialize(parser, context);
+        });
     }
 
     @Test

@@ -60,20 +60,22 @@ public class OperationDeserializerTest {
 
 
     @Test
-    void testDeserializeInvalidIntOrdinal() throws Exception {
-        when(parser.getText()).thenReturn("100");
-        when(parser.getIntValue()).thenReturn(100);
+    void testDeserializeNullThrowsException() throws Exception {
+        when(parser.getText()).thenReturn(null);
 
-        Operation result = deserializer.deserialize(parser, context);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> {
+            deserializer.deserialize(parser, context);
+        });
     }
 
     @Test
-    void testDeserializeNull() throws Exception {
-        when(parser.getText()).thenReturn(null);
+    void testDeserializeInvalidIntOrdinalThrows() throws Exception {
+        when(parser.getText()).thenReturn("100");
+        when(parser.getIntValue()).thenReturn(100);
 
-        Operation result = deserializer.deserialize(parser, context);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> {
+            deserializer.deserialize(parser, context);
+        });
     }
 
 }

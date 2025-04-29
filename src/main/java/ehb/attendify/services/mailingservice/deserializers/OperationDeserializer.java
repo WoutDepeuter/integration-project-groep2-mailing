@@ -13,7 +13,7 @@ public class OperationDeserializer extends JsonDeserializer<Operation> {
     public Operation deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException, JacksonException {
         String value = p.getText();
         if (value == null) {
-            return null;
+            throw new IllegalArgumentException("Value cannot be null");
         }
 
         for (Operation operation : Operation.values()) {
