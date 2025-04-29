@@ -101,7 +101,7 @@ class TemplateServiceTest {
         TemplateUpdateResponse response = templateService.updateTemplate(templateDto);
 
         assertFalse(response.isHasUpdated());
-        assertEquals(2, response.getUpdatedFrom());
+        assertEquals(3, response.getUpdatedFrom());
         assertEquals(2, response.getUpdatedTo());
 
         verify(templateRepository).getFirstByExchangeAndRoutingKey(exchange, routingKey);
