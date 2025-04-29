@@ -30,6 +30,6 @@ public class UserLocationTypeDeserializer extends JsonDeserializer<UserLocationT
             }
         }
 
-        return null;
+        throw new IllegalArgumentException("Invalid value for UserLocationType: " + value);
     }
 }

@@ -29,6 +29,6 @@ public class SenderDeserializer extends JsonDeserializer<Sender> {
             }
         }
 
-        return null;
+        throw new IllegalArgumentException("Invalid value for Sender: " + value);
     }
 }
