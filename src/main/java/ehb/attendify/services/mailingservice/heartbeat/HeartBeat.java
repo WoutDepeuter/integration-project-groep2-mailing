@@ -42,7 +42,7 @@ public class HeartBeat {
         if (lastBeat == -1) {
             lastBeat = now;
         }
-        log.debug("Sending heartbeat, last beat {}ms ago", now - lastBeat);
+        log.trace("Sending heartbeat, last beat {}ms ago", now - lastBeat);
         lastBeat = now;
 
         this.rabbitTemplate.convertAndSend(this.monitoringHeartbeatQueue.getName(), new HeartBeatDTO("mailing-service", now));
