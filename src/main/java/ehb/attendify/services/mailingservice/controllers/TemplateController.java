@@ -52,7 +52,8 @@ public class TemplateController {
     private void update(TemplateDto template) {
         var res = this.templateService.updateTemplate(template);
         if (!res.isHasUpdated()) {
-            log.debug("Template {} was not updated; version {} was up to date", template.getDisplayName(), template.getVersion());
+            log.debug("Template {} was not updated; version {} was up to date, or older. Version in db {}",
+                    template.getDisplayName(), res.getUpdatedTo(), res.getUpdatedFrom());
             return;
         }
 
