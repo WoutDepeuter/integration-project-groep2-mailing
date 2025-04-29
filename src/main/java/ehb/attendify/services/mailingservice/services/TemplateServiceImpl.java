@@ -21,8 +21,8 @@ public class TemplateServiceImpl implements TemplateService {
     public TemplateUpdateResponse updateTemplate(TemplateDto dto) {
         Optional<Template> optionalTemplate = this.getTemplate(dto.getExchange(), dto.getRoutingKey());
 
-        if (optionalTemplate.isPresent() && optionalTemplate.get().getVersion() <= dto.getVersion()) {
-            return new TemplateUpdateResponse(false, dto.getVersion(), dto.getVersion());
+        if (optionalTemplate.isPresent() && optionalTemplate.get().getVersion() >= dto.getVersion()) {
+            return new TemplateUpdateResponse(false, optionalTemplate.get().getVersion(), dto.getVersion());
         }
 
         Template template = optionalTemplate.orElse(
