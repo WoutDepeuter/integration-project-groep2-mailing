@@ -29,7 +29,7 @@ public class MailUserController {
 
     @RabbitListener(queues = "mailing.user")
     public void onUserUpdate(AttendifyUserMessage msg) {
-        if (msg.getUser().getId() == null) {
+        if (msg.getUser().getUid() == null) {
             log.warn("Received a user update event without a user id, ignoring!");
             return;
         }
@@ -41,11 +41,11 @@ public class MailUserController {
                 .build();
 
         if (msg.getInfo().getOperation().equals(Operation.DELETE)) {
-            this.userService.delete(msg.getUser().getId());
-            log.info("User {} has been deleted form the database", msg.getUser().getId());
+            this.userService.delete(msg.getUser().getUid());
+            log.info("User {} has been deleted form the database", msg.getUser().getUid());
         } else {
-            this.userService.updatePreferencesForUser(msg.getUser().getId(), dto);
-            log.debug("Updated UserMailPreferences for {}", msg.getUser().getId());
+            this.userService.updatePreferencesForUser(msg.getUser().getUid(), dto);
+            log.debug("Updated UserMailPreferences for {}", msg.getUser().getUid());
         }
     }
 
