@@ -29,6 +29,11 @@ public class MailUserController {
 
     @RabbitListener(queues = "mailing.user")
     public void onUserUpdate(AttendifyUserMessage msg) {
+        if (msg.getUser().getId() == null) {
+            log.warn("Received a user update event without a user id, ignoring!");
+            return;
+        }
+
         var dto = MailUserDto.builder()
                 .mailGreetingType(msg.getUser().getTitle())
                 .firstName(msg.getUser().getFirstName())
