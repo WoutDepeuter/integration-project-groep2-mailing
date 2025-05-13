@@ -58,11 +58,12 @@ public class MessageMapperServiceImpl implements MessageMapperService {
             case SINGLE -> recipients.add(this.extractSingle(userLoc));
             case ARRAY -> {
                 if (!userLoc.isArray()) {
-                    log.error("User location was not an array, cannot find users {} @ {}", userLoc.toString(), template.getUserLocation());
-                    throw new InvalidUserLocation();
-                }
-                for (var node : userLoc) {
-                    recipients.add(this.extractSingle(node));
+                    log.warn("User location was not an array, cannot find users {} @ {}", userLoc.toString(), template.getUserLocation());
+                    recipients.add(this.extractSingle(userLoc));
+                } else {
+                    for (var node : userLoc) {
+                        recipients.add(this.extractSingle(node));
+                    }
                 }
             }
         }
