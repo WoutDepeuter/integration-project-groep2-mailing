@@ -141,7 +141,7 @@ class MessageMapperServiceTest {
     }
 
     @Test
-    void extractHeader_withNonArrayForArrayType_shouldThrowInvalidUserLocation() {
+    void extractHeader_withNonArrayForArrayType_shouldFallback() throws Exception {
         Template template = Template.builder()
                 .userLocation("user")
                 .userLocationType(UserLocationType.ARRAY)
@@ -151,9 +151,9 @@ class MessageMapperServiceTest {
         ObjectNode jsonNode = objectMapper.createObjectNode();
         jsonNode.put("user", "not-an-array");
 
-        assertThrows(InvalidUserLocation.class, () ->
-            messageMapperService.extractHeader(template, jsonNode)
-        );
+        Header result = messageMapperService.extractHeader(template, jsonNode);
+        assertEquals(1, result.getRecipients().size());
+        assertEquals("not-an-array", result.getRecipients().getFirst().getEmail());
     }
 
     @Test
