@@ -9,9 +9,11 @@ import ehb.attendify.services.mailingservice.services.api.TemplateUpdateResponse
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import java.util.Optional;
 
@@ -25,7 +27,6 @@ class TemplateServiceTest {
     @Mock
     private TemplateRepository templateRepository;
 
-    @InjectMocks
     private TemplateServiceImpl templateService;
 
     private TemplateDto templateDto;
@@ -58,6 +59,13 @@ class TemplateServiceTest {
                 .userLocation("old-user-location")
                 .userLocationType(UserLocationType.SINGLE)
                 .build();
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        StringTemplateResolver resolver = new StringTemplateResolver();
+        resolver.setTemplateMode(TemplateMode.HTML);
+        templateEngine.setTemplateResolver(resolver);
+
+        this.templateService = new TemplateServiceImpl(this.templateRepository, templateEngine);
     }
 
     @Test
