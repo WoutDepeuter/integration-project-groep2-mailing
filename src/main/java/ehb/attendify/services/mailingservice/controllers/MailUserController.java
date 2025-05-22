@@ -41,12 +41,17 @@ public class MailUserController {
                 .email(msg.getUser().getEmail())
                 .build();
 
-        if (msg.getInfo().getOperation().equals(Operation.DELETE)) {
-            this.userService.delete(msg.getUser().getUid());
-            log.info("User {} has been deleted form the database", msg.getUser().getUid());
-        } else {
-            this.userService.updatePreferencesForUser(msg.getUser().getUid(), dto);
-            log.debug("Updated UserMailPreferences for {}", msg.getUser().getUid());
+        try {
+            if (msg.getInfo().getOperation().equals(Operation.DELETE)) {
+                this.userService.delete(msg.getUser().getUid());
+                log.info("User {} has been deleted form the database", msg.getUser().getUid());
+            } else {
+                this.userService.updatePreferencesForUser(msg.getUser().getUid(), dto);
+                log.debug("Updated UserMailPreferences for {}", msg.getUser().getUid());
+            }
+        } catch (Exception e) {
+            log.error("failed operation on user {}", msg.getUser().getUid());
+            log.error("", e);
         }
     }
 
