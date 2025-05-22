@@ -5,13 +5,14 @@ import ehb.attendify.services.mailingservice.models.MailUser;
 import ehb.attendify.services.mailingservice.repositories.MailUserRepository;
 import ehb.attendify.services.mailingservice.services.api.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
