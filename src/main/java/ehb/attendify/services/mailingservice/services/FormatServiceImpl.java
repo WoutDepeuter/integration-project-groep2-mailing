@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -44,8 +49,42 @@ public class FormatServiceImpl implements FormatService {
         Context ctx = new Context();
         ctx.setVariable("data", data);
         ctx.setVariable("formatter", (FormatService)this);
+
+        var nativeData = this.extractNode(data);
+        if (nativeData instanceof Map ) {
+            ctx.setVariables((Map<String, Object>)nativeData);
+        } else {
+            log.error("Failed to map to a proper map");
+        }
+
         return this.templateEngine.process(template.getTemplate(), ctx);
     }
+
+    public Object extractNode(JsonNode node) {
+        if (node.isObject()) {
+            Map<String, Object> map = new HashMap<>();
+            for (var it = node.fields(); it.hasNext(); ) {
+                var e = it.next();
+                var key = e.getKey();
+                var value = e.getValue();
+
+                map.put(key, this.extractNode(value));
+            }
+            return map;
+        }
+
+        if (node.isArray()) {
+            List<Object> list = new ArrayList<>();
+            for (var it = node.elements(); it.hasNext(); ) {
+                var listNode = it.next();
+                list.add(this.extractNode(listNode));
+            }
+            return list;
+        }
+
+        return node.asText();
+    }
+
 
     @Override
     public String formatUserName(String userId, boolean title) {
