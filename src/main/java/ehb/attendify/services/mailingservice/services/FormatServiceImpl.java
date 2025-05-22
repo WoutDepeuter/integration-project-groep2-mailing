@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -43,9 +48,54 @@ public class FormatServiceImpl implements FormatService {
     public String format(Template template, JsonNode data) {
         Context ctx = new Context();
         ctx.setVariable("data", data);
+        this.insertJsonNode(ctx, data);
         ctx.setVariable("formatter", (FormatService)this);
         return this.templateEngine.process(template.getTemplate(), ctx);
     }
+
+    private void insertJsonNode(Context ctx, JsonNode node) {
+        if (node != null && node.isObject()) {
+            Map<String, Object> root = new HashMap<>();
+            populateMapFromJsonNode(root, node);
+            for (Map.Entry<String, Object> entry : root.entrySet()) {
+                ctx.setVariable(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private void populateMapFromJsonNode(Map<String, Object> map, JsonNode node) {
+        node.fields().forEachRemaining(entry -> {
+            JsonNode value = entry.getValue();
+            if (value.isObject()) {
+                Map<String, Object> childMap = new HashMap<>();
+                populateMapFromJsonNode(childMap, value);
+                map.put(entry.getKey(), childMap);
+            } else if (value.isArray()) {
+                List<Object> list = new ArrayList<>();
+                for (JsonNode item : value) {
+                    if (item.isObject()) {
+                        Map<String, Object> itemMap = new HashMap<>();
+                        populateMapFromJsonNode(itemMap, item);
+                        list.add(itemMap);
+                    } else {
+                        list.add(getJsonValue(item));
+                    }
+                }
+                map.put(entry.getKey(), list);
+            } else {
+                map.put(entry.getKey(), getJsonValue(value));
+            }
+        });
+    }
+
+    private Object getJsonValue(JsonNode node) {
+        if (node.isTextual()) return node.textValue();
+        if (node.isNumber()) return node.numberValue();
+        if (node.isBoolean()) return node.booleanValue();
+        if (node.isNull()) return null;
+        return node.toString();
+    }
+
 
     @Override
     public String formatUserName(String userId, boolean title) {
