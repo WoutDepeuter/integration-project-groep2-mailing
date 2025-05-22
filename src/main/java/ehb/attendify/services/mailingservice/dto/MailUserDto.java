@@ -15,4 +15,6 @@ public class MailUserDto {
     
     private String lastName;
 
+    private String email;
+
 }
