@@ -48,52 +48,41 @@ public class FormatServiceImpl implements FormatService {
     public String format(Template template, JsonNode data) {
         Context ctx = new Context();
         ctx.setVariable("data", data);
-        this.insertJsonNode(ctx, data);
         ctx.setVariable("formatter", (FormatService)this);
+
+        var nativeData = this.extractNode(data);
+        if (nativeData instanceof Map ) {
+            ctx.setVariables((Map<String, Object>)nativeData);
+        } else {
+            log.error("Failed to map to a proper map");
+        }
+
         return this.templateEngine.process(template.getTemplate(), ctx);
     }
 
-    private void insertJsonNode(Context ctx, JsonNode node) {
-        if (node != null && node.isObject()) {
-            Map<String, Object> root = new HashMap<>();
-            populateMapFromJsonNode(root, node);
-            for (Map.Entry<String, Object> entry : root.entrySet()) {
-                ctx.setVariable(entry.getKey(), entry.getValue());
+    public Object extractNode(JsonNode node) {
+        if (node.isObject()) {
+            Map<String, Object> map = new HashMap<>();
+            for (var it = node.fields(); it.hasNext(); ) {
+                var e = it.next();
+                var key = e.getKey();
+                var value = e.getValue();
+
+                map.put(key, this.extractNode(value));
             }
+            return map;
         }
-    }
 
-    private void populateMapFromJsonNode(Map<String, Object> map, JsonNode node) {
-        node.fields().forEachRemaining(entry -> {
-            JsonNode value = entry.getValue();
-            if (value.isObject()) {
-                Map<String, Object> childMap = new HashMap<>();
-                populateMapFromJsonNode(childMap, value);
-                map.put(entry.getKey(), childMap);
-            } else if (value.isArray()) {
-                List<Object> list = new ArrayList<>();
-                for (JsonNode item : value) {
-                    if (item.isObject()) {
-                        Map<String, Object> itemMap = new HashMap<>();
-                        populateMapFromJsonNode(itemMap, item);
-                        list.add(itemMap);
-                    } else {
-                        list.add(getJsonValue(item));
-                    }
-                }
-                map.put(entry.getKey(), list);
-            } else {
-                map.put(entry.getKey(), getJsonValue(value));
+        if (node.isArray()) {
+            List<Object> list = new ArrayList<>();
+            for (var it = node.elements(); it.hasNext(); ) {
+                var listNode = it.next();
+                list.add(this.extractNode(listNode));
             }
-        });
-    }
+            return list;
+        }
 
-    private Object getJsonValue(JsonNode node) {
-        if (node.isTextual()) return node.textValue();
-        if (node.isNumber()) return node.numberValue();
-        if (node.isBoolean()) return node.booleanValue();
-        if (node.isNull()) return null;
-        return node.toString();
+        return node.asText();
     }
 
 
