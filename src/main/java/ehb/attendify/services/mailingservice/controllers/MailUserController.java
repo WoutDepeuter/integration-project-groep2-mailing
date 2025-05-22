@@ -33,7 +33,7 @@ public class MailUserController {
                 .mailGreetingType(msg.getUser().getTitle())
                 .firstName(msg.getUser().getFirstName())
                 .lastName(msg.getUser().getLastName())
-                .setEmail(msg.getUser().getEmail())
+                .email(msg.getUser().getEmail())
                 .build();
 
         if (msg.getInfo().getOperation().equals(Operation.DELETE)) {
