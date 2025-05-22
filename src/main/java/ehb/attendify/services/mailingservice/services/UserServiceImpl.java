@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
         if (dto.getFirstName() != null) mailUser.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null) mailUser.setLastName(dto.getLastName());
         if (dto.getMailGreetingType() != null) mailUser.setMailGreetingType(dto.getMailGreetingType());
+        if (dto.getEmail() != null) mailUser.setEmail(dto.getEmail());
 
         return this.mailUserRepository.save(mailUser);
     }
